@@ -1,5 +1,6 @@
 package com.codot.link.domains.message.domain;
 
+import com.codot.link.common.auditing.BaseEntity;
 import com.codot.link.domains.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Message {
+public class Message extends BaseEntity {
 
 	@Id
 	@Column(name = "message_id")
