@@ -1,5 +1,6 @@
 package com.codot.link.domains.link.domain;
 
+import com.codot.link.common.auditing.BaseEntity;
 import com.codot.link.domains.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Link {
+public class Link extends BaseEntity {
 
 	@Id
 	@Column(name = "link_id")
