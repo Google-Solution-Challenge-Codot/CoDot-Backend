@@ -18,7 +18,7 @@ public class CustomExceptionResponse {
 	private final String detail;
 
 	@Builder(access = AccessLevel.PRIVATE)
-	public CustomExceptionResponse(CustomException exception) {
+	private CustomExceptionResponse(CustomException exception) {
 		time = now();
 		message = exception.getErrorCode().getMessage();
 		detail = exception.getDetail();
