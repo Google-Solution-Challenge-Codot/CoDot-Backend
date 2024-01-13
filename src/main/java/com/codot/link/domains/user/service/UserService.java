@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.codot.link.common.exception.model.CustomException;
 import com.codot.link.domains.user.domain.User;
+import com.codot.link.domains.user.dto.request.UserDeleteRequest;
 import com.codot.link.domains.user.dto.request.UserSignupRequest;
 import com.codot.link.domains.user.dto.request.UserUpdateRequest;
 import com.codot.link.domains.user.dto.response.UserInfoResponse;
@@ -40,9 +41,21 @@ public class UserService {
 		user.updateInfo(request);
 	}
 
+	public void userDelete(Long userId, UserDeleteRequest request) {
+		User user = findOne(userId);
+		confirmUserByEmail(user, request.getEmail());
+		userRepository.delete(user);
+	}
+
 	public User findOne(Long userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> CustomException.from(USER_NOT_FOUND));
+	}
+
+	private void confirmUserByEmail(User user, String email) {
+		if (!user.getEmail().equals(email)) {
+			throw CustomException.from(EMAIL_NOT_MATCH);
+		}
 	}
 
 	private void validateNicknameDuplicate(String nickname) {
