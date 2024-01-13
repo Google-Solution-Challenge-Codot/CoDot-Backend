@@ -7,6 +7,9 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
+	//400 BAD_REQUEST
+	EMAIL_NOT_MATCH(HttpStatus.BAD_REQUEST, "이메일이 일치하지 않습니다."),
+
 	// 404 NOT_FOUND
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
 
