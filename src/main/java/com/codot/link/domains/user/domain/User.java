@@ -2,6 +2,7 @@ package com.codot.link.domains.user.domain;
 
 import com.codot.link.common.auditing.BaseEntity;
 import com.codot.link.domains.user.dto.request.UserSignupRequest;
+import com.codot.link.domains.user.dto.request.UserUpdateRequest;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -59,5 +60,26 @@ public class User extends BaseEntity {
 			.department(request.getDepartment())
 			.introduction(introduction)
 			.build();
+	}
+
+	public void updateInfo(UserUpdateRequest request) {
+		if (request.getName() != null) {
+			name = request.getName();
+		}
+		if (request.getEmail() != null) {
+			email = request.getEmail();
+		}
+		if (request.getNickname() != null) {
+			nickname = request.getNickname();
+		}
+		if (request.getUniversity() != null) {
+			university = request.getUniversity();
+		}
+		if (request.getDepartment() != null) {
+			department = request.getDepartment();
+		}
+		if (request.getIntroduction() != null) {
+			introduction = request.getIntroduction();
+		}
 	}
 }
