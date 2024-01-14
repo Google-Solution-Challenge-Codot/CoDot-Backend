@@ -1,6 +1,8 @@
 package com.codot.link.domains.user.domain;
 
 import com.codot.link.common.auditing.BaseEntity;
+import com.codot.link.domains.user.dto.request.UserSignupRequest;
+import com.codot.link.domains.user.dto.request.UserUpdateRequest;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,4 +37,49 @@ public class User extends BaseEntity {
 	private String department;
 
 	private String introduction;
+
+	@Builder(access = AccessLevel.PRIVATE)
+	private User(String name, String email, String nickname, String university, String department,
+		String introduction) {
+		this.name = name;
+		this.email = email;
+		this.nickname = nickname;
+		this.university = university;
+		this.department = department;
+		this.introduction = introduction;
+	}
+
+	public static User from(UserSignupRequest request) {
+		String introduction = (request.getIntroduction() == null) ? "" : request.getIntroduction();
+
+		return User.builder()
+			.name(request.getName())
+			.email(request.getEmail())
+			.nickname(request.getNickname())
+			.university(request.getUniversity())
+			.department(request.getDepartment())
+			.introduction(introduction)
+			.build();
+	}
+
+	public void updateInfo(UserUpdateRequest request) {
+		if (request.getName() != null) {
+			name = request.getName();
+		}
+		if (request.getEmail() != null) {
+			email = request.getEmail();
+		}
+		if (request.getNickname() != null) {
+			nickname = request.getNickname();
+		}
+		if (request.getUniversity() != null) {
+			university = request.getUniversity();
+		}
+		if (request.getDepartment() != null) {
+			department = request.getDepartment();
+		}
+		if (request.getIntroduction() != null) {
+			introduction = request.getIntroduction();
+		}
+	}
 }
