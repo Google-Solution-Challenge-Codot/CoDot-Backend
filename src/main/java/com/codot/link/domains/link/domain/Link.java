@@ -64,4 +64,10 @@ public class Link extends BaseEntity {
 			this.status = status;
 		}
 	}
+
+	public void updateConnectionPoint(ConnectionPoint connectionPoint) {
+		if (connectionPoint != null) {
+			this.connectionPoint = connectionPoint;
+		}
+	}
 }
