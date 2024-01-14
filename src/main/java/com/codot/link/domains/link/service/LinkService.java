@@ -36,6 +36,11 @@ public class LinkService {
 		linkRepository.save(Link.of(source, target, PROCESSING));
 	}
 
+	private User findUserByUserId(Long userId) {
+		return userRepository.findById(userId)
+			.orElseThrow(() -> CustomException.from(USER_NOT_FOUND));
+	}
+
 	private void checkExistingRequestForDuplicate(User source, User target) {
 		// 이전에 해당 사용자에게 친추 요청을 보낸 적이 있는지 확인
 		if (linkRepository.existsByFromAndTo(source, target)) {
@@ -81,24 +86,19 @@ public class LinkService {
 		link.updateConnectionPoint(request.getConnectionPoint());
 	}
 
-	private Link findOne(Long linkId) {
-		return linkRepository.findById(linkId)
-			.orElseThrow(() -> CustomException.from(LINK_NOT_FOUND));
-	}
-
 	public void deleteLink(Long linkId) {
 		Link link = findOne(linkId);
 		Link reverseLink = findReverseLink(link);
 		linkRepository.deleteAll(List.of(link, reverseLink));
 	}
 
-	private Link findReverseLink(Link link) {
-		return linkRepository.findByFromAndTo(link.getTo(), link.getFrom())
+	private Link findOne(Long linkId) {
+		return linkRepository.findById(linkId)
 			.orElseThrow(() -> CustomException.from(LINK_NOT_FOUND));
 	}
 
-	private User findUserByUserId(Long userId) {
-		return userRepository.findById(userId)
-			.orElseThrow(() -> CustomException.from(USER_NOT_FOUND));
+	private Link findReverseLink(Link link) {
+		return linkRepository.findByFromAndTo(link.getTo(), link.getFrom())
+			.orElseThrow(() -> CustomException.from(LINK_NOT_FOUND));
 	}
 }
