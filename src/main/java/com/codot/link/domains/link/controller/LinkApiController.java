@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codot.link.domains.link.dto.request.FriendRequest;
+import com.codot.link.domains.link.dto.request.LinkUpdateRequest;
 import com.codot.link.domains.link.dto.response.FriendRequestListResponse;
 import com.codot.link.domains.link.service.LinkService;
 
@@ -55,6 +56,15 @@ public class LinkApiController {
 	@DeleteMapping("/request/{link_id}")
 	public ResponseEntity<Void> declineFriendRequest(@PathVariable("link_id") Long linkId) {
 		linkService.declineFriendRequest(linkId);
+		return ResponseEntity
+			.noContent()
+			.build();
+	}
+
+	@PatchMapping("/{link_id}")
+	public ResponseEntity<Void> updateLink(@PathVariable("link_id") Long linkId,
+		@Valid @RequestBody LinkUpdateRequest request) {
+		linkService.updateLinkConnectionPoint(linkId, request);
 		return ResponseEntity
 			.noContent()
 			.build();
