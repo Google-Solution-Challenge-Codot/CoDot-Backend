@@ -2,6 +2,8 @@ package com.codot.link.domains.link.service;
 
 import static com.codot.link.common.exception.model.ErrorCode.*;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,6 +11,8 @@ import com.codot.link.common.exception.model.CustomException;
 import com.codot.link.domains.link.domain.Link;
 import com.codot.link.domains.link.domain.Status;
 import com.codot.link.domains.link.dto.request.FriendRequest;
+import com.codot.link.domains.link.dto.response.FriendRequestListResponse;
+import com.codot.link.domains.link.dto.response.FriendRequestResponse;
 import com.codot.link.domains.link.repository.LinkRepository;
 import com.codot.link.domains.user.domain.User;
 import com.codot.link.domains.user.repository.UserRepository;
@@ -41,6 +45,16 @@ public class LinkService {
 		if (linkRepository.existsByFromAndTo(target, source)) {
 			throw CustomException.of(EXISTING_FRIEND_REQUEST, "해당 사용자가 나에게 보낸 친구 추가 요청이 있습니다.");
 		}
+	}
+
+	public FriendRequestListResponse friendRequestList(Long userId) {
+		List<Link> links = linkRepository.findAllByTo_IdAndStatus(userId, Status.PROCESSING);
+
+		List<FriendRequestResponse> friendRequests = links.stream()
+			.map(FriendRequestResponse::from)
+			.toList();
+
+		return FriendRequestListResponse.from(friendRequests);
 	}
 
 	private User findUserByUserId(Long userId) {
