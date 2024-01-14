@@ -16,4 +16,6 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
 	List<Link> findAllByTo_IdAndStatus(Long toId, Status status);
 
 	Optional<Link> findByFromAndTo(User from, User to);
+
+	List<Link> findAllByFrom_IdAndStatus(Long fromId, Status status);
 }
