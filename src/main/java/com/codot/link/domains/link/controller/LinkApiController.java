@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codot.link.domains.link.dto.request.FriendRequest;
 import com.codot.link.domains.link.dto.request.LinkUpdateRequest;
+import com.codot.link.domains.link.dto.response.FriendListResponse;
 import com.codot.link.domains.link.dto.response.FriendRequestListResponse;
 import com.codot.link.domains.link.service.LinkService;
 
@@ -76,5 +77,13 @@ public class LinkApiController {
 		return ResponseEntity
 			.noContent()
 			.build();
+	}
+
+	@GetMapping
+	public ResponseEntity<FriendListResponse> friendInfo(@RequestHeader("user-id") Long userId) {
+		FriendListResponse response = linkService.friendList(userId);
+		return ResponseEntity
+			.status(OK)
+			.body(response);
 	}
 }
