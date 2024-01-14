@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.codot.link.common.exception.model.CustomException;
 import com.codot.link.domains.link.domain.Link;
 import com.codot.link.domains.link.dto.request.FriendRequest;
+import com.codot.link.domains.link.dto.request.LinkUpdateRequest;
 import com.codot.link.domains.link.dto.response.FriendRequestListResponse;
 import com.codot.link.domains.link.dto.response.FriendRequestResponse;
 import com.codot.link.domains.link.repository.LinkRepository;
@@ -73,6 +74,11 @@ public class LinkService {
 
 	public void declineFriendRequest(Long linkId) {
 		linkRepository.deleteById(linkId);
+	}
+
+	public void updateLinkConnectionPoint(Long linkId, LinkUpdateRequest request) {
+		Link link = findOne(linkId);
+		link.updateConnectionPoint(request.getConnectionPoint());
 	}
 
 	private Link findOne(Long linkId) {
