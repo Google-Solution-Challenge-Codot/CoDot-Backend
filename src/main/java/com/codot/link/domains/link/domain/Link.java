@@ -58,4 +58,10 @@ public class Link extends BaseEntity {
 			.status(status)
 			.build();
 	}
+
+	public void updateStatus(Status status) {
+		if (status != null) {
+			this.status = status;
+		}
+	}
 }
