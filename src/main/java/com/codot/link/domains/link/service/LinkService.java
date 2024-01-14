@@ -71,6 +71,10 @@ public class LinkService {
 		}
 	}
 
+	public void declineFriendRequest(Long linkId) {
+		linkRepository.deleteById(linkId);
+	}
+
 	private Link findOne(Long linkId) {
 		return linkRepository.findById(linkId)
 			.orElseThrow(() -> CustomException.from(LINK_NOT_FOUND));
