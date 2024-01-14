@@ -69,4 +69,12 @@ public class LinkApiController {
 			.noContent()
 			.build();
 	}
+
+	@DeleteMapping("/{link_id}")
+	public ResponseEntity<Void> unfriend(@PathVariable("link_id") Long linkId) {
+		linkService.deleteLink(linkId);
+		return ResponseEntity
+			.noContent()
+			.build();
+	}
 }
