@@ -12,8 +12,10 @@ import com.codot.link.common.exception.model.CustomException;
 import com.codot.link.domains.link.domain.Link;
 import com.codot.link.domains.link.dto.request.FriendRequest;
 import com.codot.link.domains.link.dto.request.LinkUpdateRequest;
+import com.codot.link.domains.link.dto.response.FriendListResponse;
 import com.codot.link.domains.link.dto.response.FriendRequestListResponse;
 import com.codot.link.domains.link.dto.response.FriendRequestResponse;
+import com.codot.link.domains.link.dto.response.FriendResponse;
 import com.codot.link.domains.link.repository.LinkRepository;
 import com.codot.link.domains.user.domain.User;
 import com.codot.link.domains.user.repository.UserRepository;
@@ -100,5 +102,14 @@ public class LinkService {
 	private Link findReverseLink(Link link) {
 		return linkRepository.findByFromAndTo(link.getTo(), link.getFrom())
 			.orElseThrow(() -> CustomException.from(LINK_NOT_FOUND));
+	}
+
+	public FriendListResponse friendList(Long userId) {
+		List<Link> links = linkRepository.findAllByFrom_IdAndStatus(userId, CONNECTED);
+
+		List<FriendResponse> friends = links.stream()
+			.map(FriendResponse::from)
+			.toList();
+		return FriendListResponse.from(friends);
 	}
 }
