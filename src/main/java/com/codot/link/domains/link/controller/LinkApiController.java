@@ -3,6 +3,7 @@ package com.codot.link.domains.link.controller;
 import static org.springframework.http.HttpStatus.*;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +47,14 @@ public class LinkApiController {
 	@PatchMapping("/request/{link_id}")
 	public ResponseEntity<Void> acceptFriendRequest(@PathVariable("link_id") Long linkId) {
 		linkService.acceptFriendRequest(linkId);
+		return ResponseEntity
+			.noContent()
+			.build();
+	}
+
+	@DeleteMapping("/request/{link_id}")
+	public ResponseEntity<Void> declineFriendRequest(@PathVariable("link_id") Long linkId) {
+		linkService.declineFriendRequest(linkId);
 		return ResponseEntity
 			.noContent()
 			.build();
