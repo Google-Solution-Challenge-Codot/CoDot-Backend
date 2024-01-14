@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -42,4 +43,31 @@ public class Link extends BaseEntity {
 	@Column(name = "connection_point")
 	@Enumerated(EnumType.STRING)
 	private ConnectionPoint connectionPoint;
+
+	@Builder(access = AccessLevel.PRIVATE)
+	private Link(User from, User to, Status status) {
+		this.from = from;
+		this.to = to;
+		this.status = status;
+	}
+
+	public static Link of(User from, User to, Status status) {
+		return Link.builder()
+			.from(from)
+			.to(to)
+			.status(status)
+			.build();
+	}
+
+	public void updateStatus(Status status) {
+		if (status != null) {
+			this.status = status;
+		}
+	}
+
+	public void updateConnectionPoint(ConnectionPoint connectionPoint) {
+		if (connectionPoint != null) {
+			this.connectionPoint = connectionPoint;
+		}
+	}
 }
