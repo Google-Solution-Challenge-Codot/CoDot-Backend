@@ -1,6 +1,7 @@
 package com.codot.link.domains.link.service;
 
 import static com.codot.link.common.exception.model.ErrorCode.*;
+import static com.codot.link.domains.link.domain.Status.*;
 
 import java.util.List;
 
@@ -9,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.codot.link.common.exception.model.CustomException;
 import com.codot.link.domains.link.domain.Link;
-import com.codot.link.domains.link.domain.Status;
 import com.codot.link.domains.link.dto.request.FriendRequest;
 import com.codot.link.domains.link.dto.response.FriendRequestListResponse;
 import com.codot.link.domains.link.dto.response.FriendRequestResponse;
@@ -32,7 +32,7 @@ public class LinkService {
 		User target = findUserByUserId(request.getTargetId());
 
 		checkExistingRequestForDuplicate(source, target);
-		linkRepository.save(Link.of(source, target, Status.PROCESSING));
+		linkRepository.save(Link.of(source, target, PROCESSING));
 	}
 
 	private void checkExistingRequestForDuplicate(User source, User target) {
@@ -48,13 +48,32 @@ public class LinkService {
 	}
 
 	public FriendRequestListResponse friendRequestList(Long userId) {
-		List<Link> links = linkRepository.findAllByTo_IdAndStatus(userId, Status.PROCESSING);
+		List<Link> links = linkRepository.findAllByTo_IdAndStatus(userId, PROCESSING);
 
 		List<FriendRequestResponse> friendRequests = links.stream()
 			.map(FriendRequestResponse::from)
 			.toList();
 
 		return FriendRequestListResponse.from(friendRequests);
+	}
+
+	public void acceptFriendRequest(Long linkId) {
+		Link friendRequest = findOne(linkId);
+		checkLinkStatus(friendRequest);
+
+		friendRequest.updateStatus(CONNECTED);
+		linkRepository.save(Link.of(friendRequest.getTo(), friendRequest.getFrom(), CONNECTED));
+	}
+
+	private void checkLinkStatus(Link friendRequest) {
+		if (!friendRequest.getStatus().equals(PROCESSING)) {
+			throw CustomException.from(ALREADY_ACCEPTED_FRIEND_REQUEST);
+		}
+	}
+
+	private Link findOne(Long linkId) {
+		return linkRepository.findById(linkId)
+			.orElseThrow(() -> CustomException.from(LINK_NOT_FOUND));
 	}
 
 	private User findUserByUserId(Long userId) {
