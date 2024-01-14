@@ -26,14 +26,16 @@ public class Message extends BaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "sender_id")
+	@JoinColumn(name = "sender_id", nullable = false)
 	private User sender;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "receiver_id")
+	@JoinColumn(name = "receiver_id", nullable = false)
 	private User receiver;
 
+	@Column(nullable = false)
 	private String title;
 
+	@Column(nullable = false)
 	private String content;
 }
