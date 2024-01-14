@@ -26,16 +26,22 @@ public class User extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	private String name;
 
+	@Column(nullable = false)
 	private String email;
 
+	@Column(nullable = false, unique = true)
 	private String nickname;
 
+	@Column(nullable = false)
 	private String university;
 
+	@Column(nullable = false)
 	private String department;
 
+	@Column(nullable = false)
 	private String introduction;
 
 	@Builder(access = AccessLevel.PRIVATE)
