@@ -28,13 +28,14 @@ public class Link extends BaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "from_id")
+	@JoinColumn(name = "from_id", nullable = false)
 	private User from;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "to_id")
+	@JoinColumn(name = "to_id", nullable = false)
 	private User to;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Status status;
 
