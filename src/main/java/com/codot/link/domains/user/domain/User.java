@@ -6,6 +6,8 @@ import com.codot.link.domains.user.dto.request.UserUpdateRequest;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,19 +46,28 @@ public class User extends BaseEntity {
 	@Column(nullable = false)
 	private String introduction;
 
+	@Column(name = "graduation_status", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private GraduationStatus graduationStatus;
+
+	@Column(name = "file_path", nullable = false)
+	private String filePath;
+
 	@Builder(access = AccessLevel.PRIVATE)
 	private User(String name, String email, String nickname, String university, String department,
-		String introduction) {
+		String introduction, GraduationStatus graduationStatus) {
 		this.name = name;
 		this.email = email;
 		this.nickname = nickname;
 		this.university = university;
 		this.department = department;
 		this.introduction = introduction;
+		this.graduationStatus = graduationStatus;
+		this.filePath = "default file path";
 	}
 
 	public static User from(UserSignupRequest request) {
-		String introduction = (request.getIntroduction() == null) ? "" : request.getIntroduction();
+		String introduction = (request.getIntroduction() == null) ? "자기 소개" : request.getIntroduction();
 
 		return User.builder()
 			.name(request.getName())
@@ -65,6 +76,7 @@ public class User extends BaseEntity {
 			.university(request.getUniversity())
 			.department(request.getDepartment())
 			.introduction(introduction)
+			.graduationStatus(request.getGraduationStatus())
 			.build();
 	}
 
@@ -86,6 +98,12 @@ public class User extends BaseEntity {
 		}
 		if (request.getIntroduction() != null) {
 			introduction = request.getIntroduction();
+		}
+		if (request.getGraduationStatus() != null) {
+			graduationStatus = request.getGraduationStatus();
+		}
+		if (request.getFilePath() != null) {
+			filePath = request.getFilePath();
 		}
 	}
 }

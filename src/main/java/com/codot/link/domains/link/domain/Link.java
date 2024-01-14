@@ -39,6 +39,7 @@ public class Link extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private Status status;
 
+	@Column(name = "connection_point")
 	@Enumerated(EnumType.STRING)
 	private ConnectionPoint connectionPoint;
 }

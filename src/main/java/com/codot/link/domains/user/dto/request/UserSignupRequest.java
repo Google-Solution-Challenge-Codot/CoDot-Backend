@@ -1,7 +1,12 @@
 package com.codot.link.domains.user.dto.request;
 
+import com.codot.link.domains.user.domain.GraduationStatus;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +14,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UserSignupRequest {
 
 	@NotEmpty(message = "이름은 필수이며 공백 문자열은 허용되지 않습니다.")
@@ -29,20 +35,24 @@ public class UserSignupRequest {
 
 	private String introduction;
 
+	@NotNull(message = "재학 여부는 필수입니다.")
+	private GraduationStatus graduationStatus;
+
 	// === Test 용도 === //
 	@Builder(access = AccessLevel.PRIVATE)
 	private UserSignupRequest(String name, String email, String nickname, String university, String department,
-		String introduction) {
+		String introduction, GraduationStatus graduationStatus) {
 		this.name = name;
 		this.email = email;
 		this.nickname = nickname;
 		this.university = university;
 		this.department = department;
 		this.introduction = introduction;
+		this.graduationStatus = graduationStatus;
 	}
 
 	public static UserSignupRequest from(String name, String email, String nickname, String university,
-		String department, String introduction) {
+		String department, String introduction, GraduationStatus graduationStatus) {
 		return UserSignupRequest.builder()
 			.name(name)
 			.email(email)
@@ -50,6 +60,7 @@ public class UserSignupRequest {
 			.university(university)
 			.department(department)
 			.introduction(introduction)
+			.graduationStatus(graduationStatus)
 			.build();
 	}
 }
