@@ -1,6 +1,7 @@
 package com.codot.link.domains.message.domain;
 
 import com.codot.link.common.auditing.BaseEntity;
+import com.codot.link.domains.message.dto.request.MessageCreateRequest;
 import com.codot.link.domains.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -12,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,4 +40,21 @@ public class Message extends BaseEntity {
 
 	@Column(nullable = false)
 	private String content;
+
+	@Builder(access = AccessLevel.PRIVATE)
+	private Message(User sender, User receiver, String title, String content) {
+		this.sender = sender;
+		this.receiver = receiver;
+		this.title = title;
+		this.content = content;
+	}
+
+	public static Message of(User sender, User receiver, MessageCreateRequest request) {
+		return Message.builder()
+			.sender(sender)
+			.receiver(receiver)
+			.title(request.getTitle())
+			.content(request.getContent())
+			.build();
+	}
 }
