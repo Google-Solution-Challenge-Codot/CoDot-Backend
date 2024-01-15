@@ -46,4 +46,8 @@ public class MessageService {
 			.toList();
 		return MessageListResponse.from(messages);
 	}
+
+	public void deleteMessage(Long messageId) {
+		messageRepository.deleteById(messageId);
+	}
 }
