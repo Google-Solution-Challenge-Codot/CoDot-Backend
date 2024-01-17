@@ -2,7 +2,10 @@ package com.codot.link.domains.user.service;
 
 import static com.codot.link.common.exception.model.ErrorCode.*;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,8 +76,12 @@ public class UserService {
 
 	public TwoHopListResponse userHome(Long userId) {
 		List<Link> links = linkRepository.findTwoHops(userId);
+		Map<Long, Link> distinctByToId = new HashMap<>();
 
-		List<TwoHopResponse> twoHops = links.stream()
+		links.forEach(link -> distinctByToId.put(link.getTo().getId(), link));
+		Collection<Link> distinctLinks = distinctByToId.values();
+
+		List<TwoHopResponse> twoHops = distinctLinks.stream()
 			.map(TwoHopResponse::from)
 			.toList();
 		return TwoHopListResponse.from(twoHops);
