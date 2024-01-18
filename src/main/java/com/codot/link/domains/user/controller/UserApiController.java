@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codot.link.domains.user.dto.request.UserDeleteRequest;
 import com.codot.link.domains.user.dto.request.UserSignupRequest;
 import com.codot.link.domains.user.dto.request.UserUpdateRequest;
+import com.codot.link.domains.user.dto.response.DirectSearchResponse;
 import com.codot.link.domains.user.dto.response.TwoHopListResponse;
 import com.codot.link.domains.user.dto.response.UserInfoResponse;
 import com.codot.link.domains.user.service.UserService;
@@ -73,6 +75,15 @@ public class UserApiController {
 	@GetMapping("/home")
 	public ResponseEntity<TwoHopListResponse> userHome(@RequestHeader("user-id") Long userId) {
 		TwoHopListResponse response = userService.userHome(userId);
+		return ResponseEntity
+			.status(OK)
+			.body(response);
+	}
+
+	@GetMapping("/direct_search")
+	public ResponseEntity<DirectSearchResponse> userDirectSearch(@RequestHeader("user-id") Long userId,
+		@RequestParam("nickname") String nickname) {
+		DirectSearchResponse response = userService.userDirectSearch(userId, nickname);
 		return ResponseEntity
 			.status(OK)
 			.body(response);
