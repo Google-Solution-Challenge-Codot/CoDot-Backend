@@ -1,5 +1,6 @@
 package com.codot.link.domains.user.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -56,4 +57,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 		+ "limit 1", nativeQuery = true)
 	Optional<ThreeHopDirectSearchResult> findUserByDirectSearchThreeHop(@Param("userId") Long userId,
 		@Param("nickname") String nickname);
+
+	@Query(value = "select u.* from users u "
+		+ "where exists (select 1 from link l where l.from_id = :userId and l.to_id = u.user_id and l.status = 'CONNECTED')", nativeQuery = true)
+	List<User> findMyFriends(@Param("userId") Long userId);
+
+	@Query(value = "select U1.* from (select u.* from users u "
+		+ "where exists (select 1 from link l1 where l1.from_id = :userId and l1.to_id = u.user_id and l1.status = 'CONNECTED')) as U1 "
+		+ "where (U1.user_id not in :previousHops)"
+		+ "and not exists (select 1 from link l2 where l2.from_id in :previousHops and l2.to_id = U1.user_id)", nativeQuery = true)
+	List<User> findMyFriendsByFriendSearch(@Param("userId") Long userId,
+		@Param("previousHops") List<Long> previousHops);
 }
