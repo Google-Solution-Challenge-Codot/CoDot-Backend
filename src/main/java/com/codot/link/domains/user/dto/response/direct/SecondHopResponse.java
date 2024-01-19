@@ -1,4 +1,4 @@
-package com.codot.link.domains.user.dto.response;
+package com.codot.link.domains.user.dto.response.direct;
 
 import com.codot.link.domains.link.domain.ConnectionPoint;
 import com.codot.link.domains.user.domain.User;

@@ -1,4 +1,4 @@
-package com.codot.link.domains.user.dto.response;
+package com.codot.link.domains.user.dto.response.direct;
 
 import com.codot.link.domains.link.domain.ConnectionPoint;
 import com.codot.link.domains.user.domain.User;
@@ -13,19 +13,19 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class FirstHopResponse extends HopResponse {
+public class ThirdHopResponse extends HopResponse {
 
-	private ConnectionPoint sourceAndFirstHopConnectionPoint;
+	private ConnectionPoint secondAndThirdHopConnectionPoint;
 
 	@Builder(access = AccessLevel.PRIVATE)
-	public FirstHopResponse(Long userId, String filePath, String nickname,
+	public ThirdHopResponse(Long userId, String filePath, String nickname,
 		ConnectionPoint connectionPoint) {
 		super(userId, filePath, nickname);
-		this.sourceAndFirstHopConnectionPoint = connectionPoint;
+		this.secondAndThirdHopConnectionPoint = connectionPoint;
 	}
 
-	public static FirstHopResponse of(User user, ConnectionPoint connectionPoint) {
-		return FirstHopResponse.builder()
+	public static ThirdHopResponse of(User user, ConnectionPoint connectionPoint) {
+		return ThirdHopResponse.builder()
 			.userId(user.getId())
 			.filePath(user.getFilePath())
 			.nickname(user.getNickname())

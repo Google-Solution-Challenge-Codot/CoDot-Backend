@@ -21,6 +21,8 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
 
 	List<Link> findAllByFrom_IdAndStatus(Long fromId, Status status);
 
+	Optional<Link> findByFrom_IdAndTo_IdAndStatus(Long fromId, Long toId, Status status);
+
 	@Query(value =
 		"select l1.* from (select u.* from users u join link l on u.user_id = l.from_id where l.to_id = :userId and l.status = 'CONNECTED') as u1 "
 			+ "join link l1 on l1.from_id = u1.user_id "

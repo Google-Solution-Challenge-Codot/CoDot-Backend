@@ -1,4 +1,4 @@
-package com.codot.link.domains.user.dto.response;
+package com.codot.link.domains.user.dto.response.direct;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
