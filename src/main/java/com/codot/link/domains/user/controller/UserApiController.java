@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.codot.link.domains.user.dto.request.FriendSearchRequest;
 import com.codot.link.domains.user.dto.request.UserDeleteRequest;
 import com.codot.link.domains.user.dto.request.UserSignupRequest;
 import com.codot.link.domains.user.dto.request.UserUpdateRequest;
-import com.codot.link.domains.user.dto.response.DirectSearchResponse;
 import com.codot.link.domains.user.dto.response.TwoHopListResponse;
 import com.codot.link.domains.user.dto.response.UserInfoResponse;
+import com.codot.link.domains.user.dto.response.direct.DirectSearchResponse;
+import com.codot.link.domains.user.dto.response.friend.FriendSearchListResponse;
 import com.codot.link.domains.user.service.UserService;
 
 import jakarta.validation.Valid;
@@ -84,6 +86,15 @@ public class UserApiController {
 	public ResponseEntity<DirectSearchResponse> userDirectSearch(@RequestHeader("user-id") Long userId,
 		@RequestParam("nickname") String nickname) {
 		DirectSearchResponse response = userService.userDirectSearch(userId, nickname);
+		return ResponseEntity
+			.status(OK)
+			.body(response);
+	}
+
+	@GetMapping("/friend_search")
+	public ResponseEntity<FriendSearchListResponse> userDirectSearch(@RequestHeader("user-id") Long userId,
+		@Valid @RequestBody FriendSearchRequest request) {
+		FriendSearchListResponse response = userService.userFriendSearch(request);
 		return ResponseEntity
 			.status(OK)
 			.body(response);
