@@ -29,31 +29,31 @@ public interface UserRepository extends JpaRepository<User, Long> {
 		@Param("nickname") String nickname);
 
 	@Query(value =
-		"select l3.to_id as firstHopId, l3.connection_point as sourceFirstCp, l1.to_id as secondHopId, l1.connection_point as firstSecondCp "
-			+ "from (select u.* from users u join link l on u.user_id = l.from_id where l.to_id = :userId and l.status = 'CONNECTED') as u1 "
-			+ "join link l1 on l1.from_id = u1.user_id "
-			+ "join link l3 on l3.from_id = :userId and l3.to_id = u1.user_id "
-			+ "where l1.to_id <> :userId "
-			+ "and l1.status = 'CONNECTED' "
-			+ "and not exists (select 1 from link l2 where (l2.from_id = :userId and l2.to_id = l1.to_id and l2.status = 'CONNECTED') "
-			+ "or (l2.from_id = l1.to_id and l2.to_id = :userId and l2.status = 'CONNECTED')) "
-			+ "and exists (select 1 from users u2 where u2.user_id = l1.to_id and u2.nickname = :nickname)", nativeQuery = true)
+		"select L1.to_id as firstHopId, L1.connection_point as sourceFirstCp, l2.to_id as secondHopId, l2.connection_point as firstSecondCp from "
+			+ "(select * from link l1 where l1.from_id = :userId and l1.status = 'CONNECTED') as L1 "
+			+ "join link l2 on L1.to_id = l2.from_id "
+			+ "where l2.to_id <> :userId "
+			+ "and l2.status = 'CONNECTED' "
+			+ "and not exists (select 1 from link l3 where l3.from_id = l2.to_id and l3.to_id = :userId and l3.status = 'CONNECTED') "
+			+ "and exists (select 1 from users u where u.nickname = :nickname and u.user_id = l2.to_id) "
+			+ "limit 1", nativeQuery = true)
 	Optional<TwoHopDirectSearchResult> findUserByDirectSearchTwoHop(@Param("userId") Long userId,
 		@Param("nickname") String nickname);
 
-	@Query(value = "select L1.*, l4.to_id as thirdHopId, l4.connection_point as secondThirdCp from "
-		+ "(select l3.to_id as firstHopId, l3.connection_point as sourceFirstCp, l1.to_id as secondHopId, l1.connection_point as firstSecondCp from "
-		+ "(select u.* from users u join link l on u.user_id = l.from_id where l.to_id = :userId and l.status = 'CONNECTED') as u1 "
-		+ "join link l1 on l1.from_id = u1.user_id "
-		+ "join link l3 on l3.from_id = :userId and l3.to_id = u1.user_id "
-		+ "where l1.to_id <> :userId "
-		+ "and l1.status = 'CONNECTED' "
-		+ "and not exists (select 1 from link l2 where (l2.from_id = :userId and l2.to_id = l1.to_id and l2.status = 'CONNECTED') "
-		+ "or (l2.from_id = l1.to_id and l2.to_id = :userId and l2.status = 'CONNECTED'))) as L1 "
-		+ "join link l4 on l4.from_id = L1.secondHopId "
-		+ "where l4.to_id <> L1.firstHopId "
-		+ "and l4.status = 'CONNECTED' "
-		+ "and exists (select 1 from users u2 where u2.user_id = l4.to_id and u2.nickname = :nickname) "
+	@Query(value = "with L1 as ("
+		+ "select l2.to_id as firstHopId, l2.connection_point as sourceFirstCp, l3.to_id as secondHopId, l3.connection_point as firstSecondCp from "
+		+ "(select * from link l1 where l1.from_id = :userId and l1.status = 'CONNECTED') as l2 "
+		+ "join link l3 on l2.to_id = l3.from_id "
+		+ "where l3.to_id <> :userId "
+		+ "and l3.status = 'CONNECTED' "
+		+ "and not exists (select 1 from link l4 where l4.from_id = l3.to_id and l4.to_id = :userId and l4.status = 'CONNECTED')"
+		+ ") "
+		+ "select L1.*, l5.to_id as thirdHopId, l5.connection_point as secondThirdCp from L1 "
+		+ "join link l5 on l5.from_id = L1.secondHopId "
+		+ "where l5.status = 'CONNECTED' "
+		+ "and not exists (select 1 from L1 where L1.firstHopId = l5.to_id) "
+		+ "and not exists (select 1 from L1 where L1.secondHopId = l5.to_id) "
+		+ "and exists (select 1 from users u where u.nickname = :nickname and u.user_id = l5.to_id) "
 		+ "limit 1", nativeQuery = true)
 	Optional<ThreeHopDirectSearchResult> findUserByDirectSearchThreeHop(@Param("userId") Long userId,
 		@Param("nickname") String nickname);
