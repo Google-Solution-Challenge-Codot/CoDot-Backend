@@ -46,7 +46,7 @@ public class UserUpdateRequest {
 		this.filePath = filePath;
 	}
 
-	public static UserUpdateRequest from(String name, String email, String nickname, String university,
+	public static UserUpdateRequest of(String name, String email, String nickname, String university,
 		String department, String introduction, GraduationStatus graduationStatus, String filePath) {
 		return UserUpdateRequest.builder()
 			.name(name)

@@ -51,7 +51,7 @@ public class UserSignupRequest {
 		this.graduationStatus = graduationStatus;
 	}
 
-	public static UserSignupRequest from(String name, String email, String nickname, String university,
+	public static UserSignupRequest of(String name, String email, String nickname, String university,
 		String department, String introduction, GraduationStatus graduationStatus) {
 		return UserSignupRequest.builder()
 			.name(name)
