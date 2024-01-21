@@ -30,6 +30,7 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
 			+ "and not exists "
 			+ "(select 1 from link l2 where (l2.from_id = :userId and l2.to_id = l1.to_id and l2.status = 'CONNECTED') or "
 			+ "(l2.from_id = l1.to_id and l2.to_id = :userId and l2.status = 'CONNECTED')) "
+			+ "order by random() "
 			+ "limit 5", nativeQuery = true)
 	List<Link> findTwoHops(@Param("userId") Long userId);
 }
