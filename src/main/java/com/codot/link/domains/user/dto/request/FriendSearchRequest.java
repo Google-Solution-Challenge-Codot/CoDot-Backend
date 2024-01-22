@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class FriendSearchRequest {
 
-	@NotNull
-	@Min(1)
+	@NotNull(message = "chosenUserId 값은 필수입니다.")
+	@Min(value = 1, message = "id값은 1 이상이어야 합니다.")
 	private Long chosenUserId;
 
-	@NotNull
+	@NotNull(message = "previousHops 값은 필수입니다. 만약, 이전 hop이 없다면 빈 배열을 넣어주세요.")
 	private List<Long> previousHops;
 
 	// === Test 용도 === //
