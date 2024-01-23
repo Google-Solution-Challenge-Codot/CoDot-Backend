@@ -1,11 +1,13 @@
 package com.codot.link.domains.auth.service;
 
+import static com.codot.link.common.exception.model.ErrorCode.*;
 import static com.codot.link.domains.auth.domain.IdType.*;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.codot.link.common.auth.jwt.JwtUtils;
+import com.codot.link.common.exception.model.CustomException;
 import com.codot.link.domains.auth.domain.LoginRecord;
 import com.codot.link.domains.auth.domain.Provider;
 import com.codot.link.domains.auth.domain.RefreshToken;
@@ -15,6 +17,7 @@ import com.codot.link.domains.auth.dto.response.IssueTokenResponse;
 import com.codot.link.domains.auth.repository.LoginRecordRepository;
 import com.codot.link.domains.auth.repository.RefreshTokenRepository;
 import com.codot.link.domains.user.domain.User;
+import com.codot.link.domains.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class TokenService {
 
 	private final JwtUtils jwtUtils;
+	private final UserRepository userRepository;
 	private final LoginRecordRepository loginRecordRepository;
 	private final RefreshTokenRepository refreshTokenRepository;
 
@@ -57,4 +61,23 @@ public class TokenService {
 		}
 		return null;
 	}
+
+	public String reissueJwt(Long userId, String refreshToken) {
+		User user = findUserByUserId(userId);
+
+		confirmRefreshTokenWithUser(user, refreshToken);
+		return jwtUtils.generateAccessToken(user);
+	}
+
+	private void confirmRefreshTokenWithUser(User user, String refreshToken) {
+		if (!refreshTokenRepository.existsByUserAndToken(user, refreshToken.substring(7))) {
+			throw CustomException.from(REFRESHTOKEN_NOT_MATCH);
+		}
+	}
+
+	private User findUserByUserId(Long userId) {
+		return userRepository.findById(userId)
+			.orElseThrow(() -> CustomException.from(USER_NOT_FOUND));
+	}
+
 }
