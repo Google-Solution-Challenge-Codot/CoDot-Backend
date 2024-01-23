@@ -23,6 +23,7 @@ import com.codot.link.domains.user.dto.response.direct.DirectSearchResponse;
 import com.codot.link.domains.user.dto.response.friend.FriendSearchListResponse;
 import com.codot.link.domains.user.service.UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -34,8 +35,10 @@ public class UserApiController {
 	private final UserService userService;
 
 	@PostMapping
-	public ResponseEntity<Void> userSignup(@Valid @RequestBody UserSignupRequest request) {
-		userService.userSignup(request);
+	public ResponseEntity<Void> userSignup(@Valid @RequestBody UserSignupRequest request,
+		HttpServletResponse response) {
+		String token = userService.userSignup(request);
+		response.setHeader("access-token", token);
 		return ResponseEntity
 			.status(CREATED)
 			.build();
@@ -53,11 +56,13 @@ public class UserApiController {
 	}
 
 	@PatchMapping
-	public ResponseEntity<Void> userUpdate(@Valid @RequestBody UserUpdateRequest request) {
+	public ResponseEntity<Void> userUpdate(@Valid @RequestBody UserUpdateRequest request,
+		HttpServletResponse response) {
 		// TODO: user_id 하드코딩 제거하고 header에서 값 추출하여 사용하기
 		Long userId = 1L;
 
-		userService.userUpdate(userId, request);
+		String token = userService.userUpdate(userId, request);
+		response.setHeader("access-token", token);
 		return ResponseEntity
 			.noContent()
 			.build();
