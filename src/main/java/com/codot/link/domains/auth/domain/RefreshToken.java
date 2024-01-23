@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -30,4 +31,17 @@ public class RefreshToken {
 
 	@Column(nullable = false)
 	private String token;
+
+	@Builder(access = AccessLevel.PRIVATE)
+	private RefreshToken(User user, String token) {
+		this.user = user;
+		this.token = token;
+	}
+
+	public static RefreshToken of(User user, String token) {
+		return RefreshToken.builder()
+			.user(user)
+			.token(token)
+			.build();
+	}
 }
