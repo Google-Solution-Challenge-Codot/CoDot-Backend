@@ -40,14 +40,11 @@ public class JwtUtils {
 	}
 
 	// jwt 만료 여부 확인
-	public boolean isTokenExpired(String token) {
-		return Jwts.parser()
+	public void validateToken(String token) {
+		Jwts.parser()
 			.verifyWith(secretKey)
 			.build()
-			.parseSignedClaims(token)
-			.getPayload()
-			.getExpiration()
-			.before(new Date());
+			.parseSignedClaims(token);
 	}
 
 	// Access Token 생성

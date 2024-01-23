@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.codot.link.common.auth.jwt.JwtUtils;
 import com.codot.link.common.exception.model.CustomException;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,16 +33,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		if (token == null) {
 			filterChain.doFilter(request, response);
-		} else if (jwtUtils.isTokenExpired(token)) {
-			log.info("Expired Token");
-			filterChain.doFilter(request, response);
-		} else {
-			Authentication authentication = checkHeaderAndCreateAuthentication(request, token);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-
-			filterChain.doFilter(request, response);
+			return;
 		}
 
+		validateToken(token);
+
+		Authentication authentication = checkHeaderAndCreateAuthentication(request, token);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		filterChain.doFilter(request, response);
 	}
 
 	private String getToken(HttpServletRequest request) {
@@ -52,11 +52,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		return authorizationHeader.substring(7);
 	}
 
+	private void validateToken(String token) {
+		try {
+			jwtUtils.validateToken(token);
+		} catch (JwtException e) {
+			log.info("Invalid Token");
+			throw CustomException.of(TOKEN_NOT_VALID, e.getMessage());
+		}
+	}
+
 	private Authentication checkHeaderAndCreateAuthentication(HttpServletRequest request, String token) {
 		if (request.getHeader("user-id") != null) {
-			return new UsernamePasswordAuthenticationToken(jwtUtils.extractNickname(token), null);
+			return new UsernamePasswordAuthenticationToken(jwtUtils.extractNickname(token), token, null);
 		} else if (request.getHeader("login-record-id") != null) {
-			return new UsernamePasswordAuthenticationToken("Unregistered User", null);
+			return new UsernamePasswordAuthenticationToken("Unregistered User", token, null);
 		}
 
 		throw CustomException.from(ID_NOT_PRESENT);

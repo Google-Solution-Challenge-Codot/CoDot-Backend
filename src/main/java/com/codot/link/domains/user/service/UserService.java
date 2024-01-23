@@ -12,7 +12,10 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.codot.link.common.auth.jwt.JwtUtils;
 import com.codot.link.common.exception.model.CustomException;
+import com.codot.link.domains.auth.domain.LoginRecord;
+import com.codot.link.domains.auth.repository.LoginRecordRepository;
 import com.codot.link.domains.link.domain.ConnectionPoint;
 import com.codot.link.domains.link.domain.Link;
 import com.codot.link.domains.link.repository.LinkRepository;
@@ -42,12 +45,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 
+	private final JwtUtils jwtUtils;
 	private final UserRepository userRepository;
 	private final LinkRepository linkRepository;
+	private final LoginRecordRepository loginRecordRepository;
 
-	public void userSignup(UserSignupRequest request) {
+	public String userSignup(Long loginRecordId, UserSignupRequest request) {
 		validateNicknameDuplicate(request.getNickname());
-		userRepository.save(User.from(request));
+		User user = userRepository.save(User.from(request));
+
+		connectUserToLoginRecord(loginRecordId, user);
+
+		return jwtUtils.generateAccessToken(user);
+	}
+
+	private void connectUserToLoginRecord(Long loginRecordId, User user) {
+		LoginRecord loginRecord = loginRecordRepository.findById(loginRecordId)
+			.orElseThrow(() -> CustomException.from(LOGIN_RECORD_NOT_FOUND));
+		loginRecord.registerUser(user);
 	}
 
 	public UserInfoResponse userInfo(Long userId) {
@@ -55,13 +70,15 @@ public class UserService {
 		return UserInfoResponse.from(user);
 	}
 
-	public void userUpdate(Long userId, UserUpdateRequest request) {
+	public String userUpdate(Long userId, UserUpdateRequest request) {
 		User user = findOne(userId);
 
 		if (request.getNickname() != null) {
 			validateNicknameDuplicate(request.getNickname());
 		}
 		user.updateInfo(request);
+
+		return jwtUtils.generateAccessToken(user);
 	}
 
 	public void userDelete(Long userId, UserDeleteRequest request) {
