@@ -45,10 +45,7 @@ public class UserApiController {
 	}
 
 	@GetMapping
-	public ResponseEntity<UserInfoResponse> userInfo() {
-		// TODO: user_id 하드코딩 제거하고 header에서 값 추출하여 사용하기
-		Long userId = 1L;
-
+	public ResponseEntity<UserInfoResponse> userInfo(@RequestHeader("user-id") Long userId) {
 		UserInfoResponse response = userService.userInfo(userId);
 		return ResponseEntity
 			.status(OK)
@@ -57,10 +54,7 @@ public class UserApiController {
 
 	@PatchMapping
 	public ResponseEntity<Void> userUpdate(@Valid @RequestBody UserUpdateRequest request,
-		HttpServletResponse response) {
-		// TODO: user_id 하드코딩 제거하고 header에서 값 추출하여 사용하기
-		Long userId = 1L;
-
+		@RequestHeader("user-id") Long userId, HttpServletResponse response) {
 		String token = userService.userUpdate(userId, request);
 		response.setHeader("access-token", token);
 		return ResponseEntity
@@ -69,10 +63,8 @@ public class UserApiController {
 	}
 
 	@DeleteMapping
-	public ResponseEntity<Void> userDelete(@Valid @RequestBody UserDeleteRequest request) {
-		// TODO: user_id 하드코딩 제거하고 header에서 값 추출하여 사용하기
-		Long userId = 1L;
-
+	public ResponseEntity<Void> userDelete(@Valid @RequestBody UserDeleteRequest request,
+		@RequestHeader("user-id") Long userId) {
 		userService.userDelete(userId, request);
 		return ResponseEntity
 			.noContent()
