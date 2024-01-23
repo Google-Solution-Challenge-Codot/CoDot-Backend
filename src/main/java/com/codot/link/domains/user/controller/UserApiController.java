@@ -36,8 +36,8 @@ public class UserApiController {
 
 	@PostMapping
 	public ResponseEntity<Void> userSignup(@Valid @RequestBody UserSignupRequest request,
-		HttpServletResponse response) {
-		String token = userService.userSignup(request);
+		@RequestHeader("login-record-id") Long loginRecordId, HttpServletResponse response) {
+		String token = userService.userSignup(loginRecordId, request);
 		response.setHeader("access-token", token);
 		return ResponseEntity
 			.status(CREATED)
