@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.codot.link.common.auth.jwt.JwtUtils;
 import com.codot.link.common.exception.model.CustomException;
 import com.codot.link.domains.link.domain.ConnectionPoint;
 import com.codot.link.domains.link.domain.Link;
@@ -44,10 +45,13 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final LinkRepository linkRepository;
+	private final JwtUtils jwtUtils;
 
-	public void userSignup(UserSignupRequest request) {
+	public String userSignup(UserSignupRequest request) {
 		validateNicknameDuplicate(request.getNickname());
-		userRepository.save(User.from(request));
+		User user = userRepository.save(User.from(request));
+
+		return jwtUtils.generateAccessToken(user);
 	}
 
 	public UserInfoResponse userInfo(Long userId) {
@@ -55,13 +59,15 @@ public class UserService {
 		return UserInfoResponse.from(user);
 	}
 
-	public void userUpdate(Long userId, UserUpdateRequest request) {
+	public String userUpdate(Long userId, UserUpdateRequest request) {
 		User user = findOne(userId);
 
 		if (request.getNickname() != null) {
 			validateNicknameDuplicate(request.getNickname());
 		}
 		user.updateInfo(request);
+
+		return jwtUtils.generateAccessToken(user);
 	}
 
 	public void userDelete(Long userId, UserDeleteRequest request) {
