@@ -11,6 +11,9 @@ public enum ErrorCode {
 	EMAIL_NOT_MATCH(HttpStatus.BAD_REQUEST, "이메일이 일치하지 않습니다."),
 	ID_NOT_PRESENT(HttpStatus.BAD_REQUEST, "헤더에 어떠한 id도 존재하지 않습니다."),
 
+	//401 UNAUTHORIZED
+	TOKEN_NOT_VALID(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다."),
+
 	// 404 NOT_FOUND
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
 	LINK_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 LINK입니다."),
