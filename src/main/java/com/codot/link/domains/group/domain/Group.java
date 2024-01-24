@@ -1,6 +1,7 @@
 package com.codot.link.domains.group.domain;
 
 import com.codot.link.domains.group.dto.request.GroupCreateRequest;
+import com.codot.link.domains.group.dto.request.GroupModifyRequest;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,5 +42,14 @@ public class Group {
 			.name(request.getName())
 			.description(request.getDescription())
 			.build();
+	}
+
+	public void updateInfo(GroupModifyRequest request) {
+		if (request.getName() != null) {
+			this.name = request.getName();
+		}
+		if (request.getDescription() != null) {
+			this.description = request.getDescription();
+		}
 	}
 }
