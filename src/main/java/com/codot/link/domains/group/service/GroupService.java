@@ -10,6 +10,7 @@ import com.codot.link.common.exception.model.CustomException;
 import com.codot.link.domains.group.domain.Group;
 import com.codot.link.domains.group.domain.GroupUser;
 import com.codot.link.domains.group.dto.request.GroupCreateRequest;
+import com.codot.link.domains.group.dto.request.GroupModifyRequest;
 import com.codot.link.domains.group.dto.response.GroupInfoResponse;
 import com.codot.link.domains.group.repository.GroupRepository;
 import com.codot.link.domains.group.repository.GroupUserRepository;
@@ -56,4 +57,11 @@ public class GroupService {
 		return groupRepository.findById(groupId)
 			.orElseThrow(() -> CustomException.from(GROUP_NOT_FOUND));
 	}
+
+	public void modifyGroup(Long userId, Long groupId, GroupModifyRequest request) {
+		Group group = groupRepository.findByUserIdAndGroupId(userId, groupId)
+			.orElseThrow(() -> CustomException.of(GROUP_NOT_FOUND, "본인 소유의 그룹만 수정할 수 있습니다."));
+		group.updateInfo(request);
+	}
+
 }
