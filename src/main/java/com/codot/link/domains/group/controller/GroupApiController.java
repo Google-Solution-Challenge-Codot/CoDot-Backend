@@ -3,6 +3,7 @@ package com.codot.link.domains.group.controller;
 import static org.springframework.http.HttpStatus.*;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codot.link.domains.group.dto.request.GroupCreateRequest;
+import com.codot.link.domains.group.dto.request.GroupDeleteRequest;
 import com.codot.link.domains.group.dto.request.GroupModifyRequest;
 import com.codot.link.domains.group.dto.response.GroupInfoResponse;
 import com.codot.link.domains.group.service.GroupService;
@@ -50,6 +52,15 @@ public class GroupApiController {
 	public ResponseEntity<Void> modifyGroup(@RequestHeader("user-id") Long userId,
 		@PathVariable("group_id") Long groupId, @RequestBody GroupModifyRequest request) {
 		groupService.modifyGroup(userId, groupId, request);
+		return ResponseEntity
+			.noContent()
+			.build();
+	}
+
+	@DeleteMapping("/{group_id}")
+	public ResponseEntity<Void> deleteGroup(@RequestHeader("user-id") Long userId,
+		@PathVariable("group_id") Long groupId, @RequestBody GroupDeleteRequest request) {
+		groupService.deleteGroup(userId, groupId, request);
 		return ResponseEntity
 			.noContent()
 			.build();
