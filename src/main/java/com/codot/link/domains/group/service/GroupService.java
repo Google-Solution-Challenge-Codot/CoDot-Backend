@@ -10,6 +10,7 @@ import com.codot.link.common.exception.model.CustomException;
 import com.codot.link.domains.group.domain.Group;
 import com.codot.link.domains.group.domain.GroupUser;
 import com.codot.link.domains.group.dto.request.GroupCreateRequest;
+import com.codot.link.domains.group.dto.request.GroupDeleteRequest;
 import com.codot.link.domains.group.dto.request.GroupModifyRequest;
 import com.codot.link.domains.group.dto.response.GroupInfoResponse;
 import com.codot.link.domains.group.repository.GroupRepository;
@@ -59,9 +60,28 @@ public class GroupService {
 	}
 
 	public void modifyGroup(Long userId, Long groupId, GroupModifyRequest request) {
-		Group group = groupRepository.findByUserIdAndGroupId(userId, groupId)
-			.orElseThrow(() -> CustomException.of(GROUP_NOT_FOUND, "본인 소유의 그룹만 수정할 수 있습니다."));
+		Group group = findOneByUserIdAndGroupIdAndRole(userId, groupId, HOST.toString(), "본인 소유의 그룹만 수정할 수 있습니다.");
 		group.updateInfo(request);
 	}
 
+	public void deleteGroup(Long userId, Long groupId, GroupDeleteRequest request) {
+		verifyUserByEmail(userId, request);
+
+		Group group = findOneByUserIdAndGroupIdAndRole(userId, groupId, HOST.toString(), "본인 소유의 그룹만 삭제할 수 있습니다.");
+
+		groupUserRepository.deleteAll(groupUserRepository.findAllByGroup(group));
+		groupRepository.delete(group);
+	}
+
+	private Group findOneByUserIdAndGroupIdAndRole(Long userId, Long groupId, String role, String detail) {
+		return groupRepository.findByUserIdAndGroupIdAndRole(userId, groupId, role)
+			.orElseThrow(() -> CustomException.of(GROUP_NOT_FOUND, detail));
+	}
+
+	private void verifyUserByEmail(Long userId, GroupDeleteRequest request) {
+		User user = findUserByUserId(userId);
+		if (!user.getEmail().equals(request.getEmail())) {
+			throw CustomException.from(EMAIL_NOT_MATCH);
+		}
+	}
 }
