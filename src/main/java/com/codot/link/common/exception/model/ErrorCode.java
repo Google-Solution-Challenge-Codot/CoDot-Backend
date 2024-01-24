@@ -20,6 +20,7 @@ public enum ErrorCode {
 	USER_NOT_FOUND(NOT_FOUND, "존재하지 않는 사용자입니다."),
 	LINK_NOT_FOUND(NOT_FOUND, "존재하지 않는 LINK입니다."),
 	LOGIN_RECORD_NOT_FOUND(NOT_FOUND, "존재하지 않는 Login Record입니다."),
+	GROUP_NOT_FOUND(NOT_FOUND, "존재하지 않는 그룹입니다."),
 
 	// 409 CONFLICT
 	DUPLICATE_USER_NICKNAME(CONFLICT, "이미 존재하는 닉네임입니다."),
