@@ -13,6 +13,7 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 	boolean existsByName(String name);
 
 	@Query(value = "select g.* from groups g "
-		+ "where exists (select 1 from group_user gu where gu.user_id = :userId and gu.group_id = :groupId and gu.role = 'HOST')", nativeQuery = true)
-	Optional<Group> findByUserIdAndGroupId(@Param("userId") Long userId, @Param("groupId") Long groupId);
+		+ "where exists (select 1 from group_user gu where gu.user_id = :userId and gu.group_id = :groupId and gu.role = :role)", nativeQuery = true)
+	Optional<Group> findByUserIdAndGroupIdAndRole(@Param("userId") Long userId, @Param("groupId") Long groupId,
+		@Param("role") String role);
 }
