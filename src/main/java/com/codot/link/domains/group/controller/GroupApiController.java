@@ -18,6 +18,7 @@ import com.codot.link.domains.group.dto.request.GroupDeleteRequest;
 import com.codot.link.domains.group.dto.request.GroupJoinRequest;
 import com.codot.link.domains.group.dto.request.GroupModifyRequest;
 import com.codot.link.domains.group.dto.response.GroupInfoResponse;
+import com.codot.link.domains.group.dto.response.MyGroupListResponse;
 import com.codot.link.domains.group.service.GroupService;
 import com.codot.link.domains.group.service.GroupUserService;
 
@@ -56,6 +57,14 @@ public class GroupApiController {
 		return ResponseEntity
 			.noContent()
 			.build();
+	}
+
+	@GetMapping("/user")
+	public ResponseEntity<MyGroupListResponse> myGroupList(@RequestHeader("user-id") Long userId) {
+		MyGroupListResponse response = groupService.myGroupList(userId);
+		return ResponseEntity
+			.status(OK)
+			.body(response);
 	}
 
 	@DeleteMapping("/{group_id}")
