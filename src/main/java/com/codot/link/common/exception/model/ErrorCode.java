@@ -26,7 +26,10 @@ public enum ErrorCode {
 	DUPLICATE_USER_NICKNAME(CONFLICT, "이미 존재하는 닉네임입니다."),
 	DUPLICATE_GROUP_NAME(CONFLICT, "이미 존재하는 그룹 이름입니다."),
 	ALREADY_ACCEPTED_FRIEND_REQUEST(CONFLICT, "이미 수락된 친구 추가 요청입니다."),
+	ALREADY_ACCEPTED_GROUP_JOIN_REQUEST(CONFLICT, "이미 해당 그룹에 참가한 상태입니다."),
 	EXISTING_FRIEND_REQUEST(CONFLICT, "친구 추가 요청이 이미 존재합니다."),
+	EXISTING_GROUP_JOIN_REQUEST(CONFLICT, "그룹 가입 요청이 이미 존재합니다."),
+	INAPPROPRIATE_GROUP_JOIN_REQUEST(CONFLICT, "자신 기준 2 hop 이내의 사용자가 속한 그룹에만 가입 신청을 보낼 수 있습니다."),
 	REFRESHTOKEN_NOT_MATCH(CONFLICT, "Refresh Token이 일치하지 않습니다.");
 
 	private final String message;
