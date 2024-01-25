@@ -37,4 +37,10 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 		+ "join group_user gu on g.group_id = gu.group_id "
 		+ "where gu.user_id = :userId and gu.accepted = :accepted", nativeQuery = true)
 	List<MyGroupResult> findAllByUserAndAccepted(@Param("userId") Long userId, @Param("accepted") boolean accepted);
+
+	// TODO: postgresql로 변경 시 쿼리 수정할 것
+	@Query(value = "select * from groups g "
+		+ "where g.name REGEXP :regex "
+		+ "or g.description REGEXP :regex", nativeQuery = true)
+	List<Group> findAllBySearchTextRegex(@Param("regex") String regex);
 }
