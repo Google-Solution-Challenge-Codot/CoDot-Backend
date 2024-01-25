@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codot.link.domains.group.dto.request.GroupCreateRequest;
@@ -18,6 +19,7 @@ import com.codot.link.domains.group.dto.request.GroupDeleteRequest;
 import com.codot.link.domains.group.dto.request.GroupJoinRequest;
 import com.codot.link.domains.group.dto.request.GroupModifyRequest;
 import com.codot.link.domains.group.dto.response.GroupInfoResponse;
+import com.codot.link.domains.group.dto.response.GroupSearchListResponse;
 import com.codot.link.domains.group.dto.response.MyGroupListResponse;
 import com.codot.link.domains.group.service.GroupService;
 import com.codot.link.domains.group.service.GroupUserService;
@@ -99,5 +101,13 @@ public class GroupApiController {
 		return ResponseEntity
 			.noContent()
 			.build();
+	}
+
+	@GetMapping
+	public ResponseEntity<?> groupList(@RequestParam(value = "search_text", required = false) String searchText) {
+		GroupSearchListResponse response = groupService.groupList(searchText);
+		return ResponseEntity
+			.status(OK)
+			.body(response);
 	}
 }
