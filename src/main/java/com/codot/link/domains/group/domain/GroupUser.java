@@ -58,4 +58,8 @@ public class GroupUser {
 			.accepted(accepted)
 			.build();
 	}
+
+	public void joinGroup() {
+		this.accepted = true;
+	}
 }
