@@ -83,4 +83,12 @@ public class GroupApiController {
 			.noContent()
 			.build();
 	}
+
+	@DeleteMapping("/request/{group_user_id}")
+	public ResponseEntity<Void> declineGroupJoinRequest(@PathVariable("group_user_id") Long groupUserId) {
+		groupUserService.declineGroupJoinRequest(groupUserId);
+		return ResponseEntity
+			.noContent()
+			.build();
+	}
 }
