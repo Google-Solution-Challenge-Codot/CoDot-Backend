@@ -3,6 +3,8 @@ package com.codot.link.domains.group.service;
 import static com.codot.link.common.exception.model.ErrorCode.*;
 import static com.codot.link.domains.group.domain.Role.*;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +13,7 @@ import com.codot.link.domains.group.domain.Group;
 import com.codot.link.domains.group.domain.GroupUser;
 import com.codot.link.domains.group.dto.request.GroupCreateRequest;
 import com.codot.link.domains.group.dto.request.GroupDeleteRequest;
+import com.codot.link.domains.group.dto.request.GroupJoinRequest;
 import com.codot.link.domains.group.dto.request.GroupModifyRequest;
 import com.codot.link.domains.group.dto.response.GroupInfoResponse;
 import com.codot.link.domains.group.repository.GroupRepository;
@@ -83,5 +86,31 @@ public class GroupService {
 		if (!user.getEmail().equals(request.getEmail())) {
 			throw CustomException.from(EMAIL_NOT_MATCH);
 		}
+	}
+
+	public void groupJoinRequest(Long userId, GroupJoinRequest request) {
+		checkUserEligibilityToJoinGroup(userId, request.getGroupId());
+
+		User user = findUserByUserId(userId);
+		Group group = findOne(request.getGroupId());
+
+		checkExistingRequestForDuplicate(user, group);
+		groupUserRepository.save(GroupUser.of(user, group, PARTICIPANT, false));
+	}
+
+	private void checkUserEligibilityToJoinGroup(Long userId, Long groupId) {
+		if (!groupRepository.isGroupJoinable(userId, groupId)) {
+			throw CustomException.from(INAPPROPRIATE_GROUP_JOIN_REQUEST);
+		}
+	}
+
+	private void checkExistingRequestForDuplicate(User user, Group group) {
+		Optional<GroupUser> optionalGroupUser = groupUserRepository.findByUserAndGroup(user, group);
+		if (optionalGroupUser.isEmpty()) {
+			return;
+		}
+		GroupUser groupUser = optionalGroupUser.get();
+		throw (groupUser.isAccepted()) ? CustomException.from(ALREADY_ACCEPTED_GROUP_JOIN_REQUEST) :
+			CustomException.from(EXISTING_GROUP_JOIN_REQUEST);
 	}
 }
