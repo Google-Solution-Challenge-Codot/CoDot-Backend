@@ -35,4 +35,8 @@ public class GroupUserService {
 		return groupUserRepository.findById(groupUserId)
 			.orElseThrow(() -> CustomException.from(GROUP_USER_NOT_FOUND));
 	}
+
+	public void declineGroupJoinRequest(Long groupUserId) {
+		groupUserRepository.deleteById(groupUserId);
+	}
 }
