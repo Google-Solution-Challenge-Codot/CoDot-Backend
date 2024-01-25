@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,4 +41,25 @@ public class GroupUser {
 
 	@Column(nullable = false)
 	private boolean accepted;
+
+	@Builder(access = AccessLevel.PRIVATE)
+	private GroupUser(User user, Group group, Role role, boolean accepted) {
+		this.user = user;
+		this.group = group;
+		this.role = role;
+		this.accepted = accepted;
+	}
+
+	public static GroupUser of(User user, Group group, Role role, boolean accepted) {
+		return GroupUser.builder()
+			.user(user)
+			.group(group)
+			.role(role)
+			.accepted(accepted)
+			.build();
+	}
+
+	public void joinGroup() {
+		this.accepted = true;
+	}
 }
