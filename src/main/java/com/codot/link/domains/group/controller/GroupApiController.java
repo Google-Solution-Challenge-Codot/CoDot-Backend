@@ -104,7 +104,8 @@ public class GroupApiController {
 	}
 
 	@GetMapping
-	public ResponseEntity<?> groupList(@RequestParam(value = "search_text", required = false) String searchText) {
+	public ResponseEntity<GroupSearchListResponse> groupList(
+		@RequestParam(value = "search_text", required = false) String searchText) {
 		GroupSearchListResponse response = groupService.groupList(searchText);
 		return ResponseEntity
 			.status(OK)
