@@ -75,4 +75,12 @@ public class GroupApiController {
 			.status(CREATED)
 			.build();
 	}
+
+	@PatchMapping("/request/{group_user_id}")
+	public ResponseEntity<Void> acceptGroupJoinRequest(@PathVariable("group_user_id") Long groupUserId) {
+		groupUserService.acceptGroupJoinRequest(groupUserId);
+		return ResponseEntity
+			.noContent()
+			.build();
+	}
 }
