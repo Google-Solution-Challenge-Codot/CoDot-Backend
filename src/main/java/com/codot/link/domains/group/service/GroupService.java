@@ -3,12 +3,16 @@ package com.codot.link.domains.group.service;
 import static com.codot.link.common.exception.model.ErrorCode.*;
 import static com.codot.link.domains.group.domain.Role.*;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.codot.link.common.exception.model.CustomException;
+import com.codot.link.domains.group.dao.MyGroupResult;
 import com.codot.link.domains.group.domain.Group;
 import com.codot.link.domains.group.domain.GroupUser;
 import com.codot.link.domains.group.dto.request.GroupCreateRequest;
@@ -16,6 +20,8 @@ import com.codot.link.domains.group.dto.request.GroupDeleteRequest;
 import com.codot.link.domains.group.dto.request.GroupJoinRequest;
 import com.codot.link.domains.group.dto.request.GroupModifyRequest;
 import com.codot.link.domains.group.dto.response.GroupInfoResponse;
+import com.codot.link.domains.group.dto.response.MyGroupListResponse;
+import com.codot.link.domains.group.dto.response.MyGroupResponse;
 import com.codot.link.domains.group.repository.GroupRepository;
 import com.codot.link.domains.group.repository.GroupUserRepository;
 import com.codot.link.domains.user.domain.User;
@@ -112,5 +118,28 @@ public class GroupService {
 		GroupUser groupUser = optionalGroupUser.get();
 		throw (groupUser.isAccepted()) ? CustomException.from(ALREADY_ACCEPTED_GROUP_JOIN_REQUEST) :
 			CustomException.from(EXISTING_GROUP_JOIN_REQUEST);
+	}
+
+	public MyGroupListResponse myGroupList(Long userId) {
+		List<MyGroupResult> groups = groupRepository.findAllByUserAndAccepted(userId, true);
+
+		Map<Boolean, List<MyGroupResult>> partitionedResults = partitionGroupsByRole(groups);
+
+		List<MyGroupResponse> hosts = extractResponseByCondition(partitionedResults, true);
+		List<MyGroupResponse> participants = extractResponseByCondition(partitionedResults, false);
+
+		return MyGroupListResponse.of(hosts, participants);
+	}
+
+	private Map<Boolean, List<MyGroupResult>> partitionGroupsByRole(List<MyGroupResult> groups) {
+		return groups.stream()
+			.collect(Collectors.partitioningBy(group -> group.getRole().equals(HOST)));
+	}
+
+	private List<MyGroupResponse> extractResponseByCondition(Map<Boolean, List<MyGroupResult>> partitionedResults,
+		boolean condition) {
+		return partitionedResults.get(condition).stream()
+			.map(MyGroupResponse::from)
+			.toList();
 	}
 }
