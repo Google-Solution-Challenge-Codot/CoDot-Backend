@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codot.link.domains.group.dto.request.GroupCreateRequest;
 import com.codot.link.domains.group.dto.request.GroupDeleteRequest;
+import com.codot.link.domains.group.dto.request.GroupJoinRequest;
 import com.codot.link.domains.group.dto.request.GroupModifyRequest;
 import com.codot.link.domains.group.dto.response.GroupInfoResponse;
 import com.codot.link.domains.group.service.GroupService;
@@ -63,6 +64,15 @@ public class GroupApiController {
 		groupService.deleteGroup(userId, groupId, request);
 		return ResponseEntity
 			.noContent()
+			.build();
+	}
+
+	@PostMapping("/request")
+	public ResponseEntity<Void> groupJoinRequest(@RequestHeader("user-id") Long userId,
+		@Valid @RequestBody GroupJoinRequest request) {
+		groupService.groupJoinRequest(userId, request);
+		return ResponseEntity
+			.status(CREATED)
 			.build();
 	}
 }
