@@ -20,6 +20,8 @@ import com.codot.link.domains.group.dto.request.GroupDeleteRequest;
 import com.codot.link.domains.group.dto.request.GroupJoinRequest;
 import com.codot.link.domains.group.dto.request.GroupModifyRequest;
 import com.codot.link.domains.group.dto.response.GroupInfoResponse;
+import com.codot.link.domains.group.dto.response.GroupSearchListResponse;
+import com.codot.link.domains.group.dto.response.GroupSearchResponse;
 import com.codot.link.domains.group.dto.response.MyGroupListResponse;
 import com.codot.link.domains.group.dto.response.MyGroupResponse;
 import com.codot.link.domains.group.repository.GroupRepository;
@@ -141,5 +143,22 @@ public class GroupService {
 		return partitionedResults.get(condition).stream()
 			.map(MyGroupResponse::from)
 			.toList();
+	}
+
+	public GroupSearchListResponse groupList(String searchText) {
+		String regex = processSearchText(searchText);
+		List<Group> allByRegex = groupRepository.findAllBySearchTextRegex(regex);
+
+		List<GroupSearchResponse> groups = allByRegex.stream()
+			.map(GroupSearchResponse::from)
+			.toList();
+		return GroupSearchListResponse.from(groups);
+	}
+
+	private String processSearchText(String searchText) {
+		if (searchText == null) {
+			return "";
+		}
+		return "(?i)" + searchText.trim().replaceAll(" +", "|");
 	}
 }
