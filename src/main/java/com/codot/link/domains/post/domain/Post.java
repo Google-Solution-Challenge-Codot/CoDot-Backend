@@ -2,6 +2,7 @@ package com.codot.link.domains.post.domain;
 
 import com.codot.link.domains.group.domain.Group;
 import com.codot.link.domains.post.dto.request.PostCreateRequest;
+import com.codot.link.domains.post.dto.request.PostModifyRequest;
 import com.codot.link.domains.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -58,5 +59,14 @@ public class Post {
 			.user(user)
 			.group(group)
 			.build();
+	}
+
+	public void updateInfo(PostModifyRequest request) {
+		if (request.getTitle() != null) {
+			this.title = request.getTitle();
+		}
+		if (request.getContent() != null) {
+			this.content = request.getContent();
+		}
 	}
 }
