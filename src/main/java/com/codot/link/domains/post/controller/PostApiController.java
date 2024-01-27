@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codot.link.domains.post.dto.request.PostCreateRequest;
+import com.codot.link.domains.post.dto.response.PostInfoListResponse;
 import com.codot.link.domains.post.dto.response.PostInfoResponse;
 import com.codot.link.domains.post.service.PostService;
 
@@ -38,6 +39,15 @@ public class PostApiController {
 	public ResponseEntity<PostInfoResponse> postInfo(@RequestHeader("user-id") Long userId,
 		@PathVariable("post_id") Long postId) {
 		PostInfoResponse response = postService.postInfo(userId, postId);
+		return ResponseEntity
+			.status(OK)
+			.body(response);
+	}
+
+	@GetMapping("/group/{group_id}")
+	public ResponseEntity<PostInfoListResponse> postList(@RequestHeader("user-id") Long userId,
+		@PathVariable("group_id") Long groupId) {
+		PostInfoListResponse response = postService.postList(userId, groupId);
 		return ResponseEntity
 			.status(OK)
 			.body(response);
