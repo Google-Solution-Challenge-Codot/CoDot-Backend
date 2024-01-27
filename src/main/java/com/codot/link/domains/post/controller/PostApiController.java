@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.*;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codot.link.domains.post.dto.request.PostCreateRequest;
+import com.codot.link.domains.post.dto.request.PostModifyRequest;
 import com.codot.link.domains.post.dto.response.PostInfoListResponse;
 import com.codot.link.domains.post.dto.response.PostInfoResponse;
 import com.codot.link.domains.post.service.PostService;
@@ -51,5 +53,14 @@ public class PostApiController {
 		return ResponseEntity
 			.status(OK)
 			.body(response);
+	}
+
+	@PatchMapping("/{post_id}")
+	public ResponseEntity<Void> modifyPost(@RequestHeader("user-id") Long userId, @PathVariable("post_id") Long postId,
+		@Valid @RequestBody PostModifyRequest request) {
+		postService.modifyPost(userId, postId, request);
+		return ResponseEntity
+			.noContent()
+			.build();
 	}
 }
