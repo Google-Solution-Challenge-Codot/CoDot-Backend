@@ -11,6 +11,7 @@ import com.codot.link.domains.group.repository.GroupRepository;
 import com.codot.link.domains.group.repository.GroupUserRepository;
 import com.codot.link.domains.post.domain.Post;
 import com.codot.link.domains.post.dto.request.PostCreateRequest;
+import com.codot.link.domains.post.dto.response.PostInfoResponse;
 import com.codot.link.domains.post.repository.PostRepository;
 import com.codot.link.domains.user.domain.User;
 import com.codot.link.domains.user.repository.UserRepository;
@@ -37,7 +38,7 @@ public class PostService {
 
 	private void CheckPostRegistrationPermission(Long userId, PostCreateRequest request) {
 		if (!groupUserRepository.existsByUser_IdAndGroup_IdAndAccepted(userId, request.getGroupId(), true)) {
-			throw CustomException.from(NOT_GROUP_MEMBER);
+			throw CustomException.of(NOT_GROUP_MEMBER, "자신이 속한 그룹에만 게시물을 등록할 수 있습니다.");
 		}
 	}
 
@@ -51,4 +52,21 @@ public class PostService {
 			.orElseThrow(() -> CustomException.from(GROUP_NOT_FOUND));
 	}
 
+	public PostInfoResponse postInfo(Long userId, Long postId) {
+		checkPostReadingPermission(userId, postId);
+
+		Post post = findOne(postId);
+		return PostInfoResponse.from(post);
+	}
+
+	private void checkPostReadingPermission(Long userId, Long postId) {
+		if (!postRepository.canUserAccessPost(userId, postId)) {
+			throw CustomException.of(NOT_GROUP_MEMBER, "자신이 속한 그룹의 게시물만 조회할 수 있습니다.");
+		}
+	}
+
+	private Post findOne(Long postId) {
+		return postRepository.findById(postId)
+			.orElseThrow(() -> CustomException.from(POST_NOT_FOUND));
+	}
 }
