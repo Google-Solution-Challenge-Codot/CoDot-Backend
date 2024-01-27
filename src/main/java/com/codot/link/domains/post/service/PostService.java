@@ -13,6 +13,7 @@ import com.codot.link.domains.group.repository.GroupRepository;
 import com.codot.link.domains.group.repository.GroupUserRepository;
 import com.codot.link.domains.post.domain.Post;
 import com.codot.link.domains.post.dto.request.PostCreateRequest;
+import com.codot.link.domains.post.dto.request.PostModifyRequest;
 import com.codot.link.domains.post.dto.response.PostInfoListResponse;
 import com.codot.link.domains.post.dto.response.PostInfoResponse;
 import com.codot.link.domains.post.dto.response.PostResponse;
@@ -82,6 +83,13 @@ public class PostService {
 		if (!groupUserRepository.existsByUser_IdAndGroup_IdAndAccepted(userId, groupId, true)) {
 			throw CustomException.of(NOT_GROUP_MEMBER, "자신이 속한 그룹의 게시물들만 조회할 수 있습니다.");
 		}
+	}
+
+	public void modifyPost(Long userId, Long postId, PostModifyRequest request) {
+		Post post = postRepository.findByIdAndUser_Id(postId, userId)
+			.orElseThrow(() -> CustomException.from(NOT_POST_WRITER));
+		
+		post.updateInfo(request);
 	}
 
 	private Post findOne(Long postId) {
