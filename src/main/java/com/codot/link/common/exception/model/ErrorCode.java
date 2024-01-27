@@ -33,6 +33,7 @@ public enum ErrorCode {
 	EXISTING_GROUP_JOIN_REQUEST(CONFLICT, "그룹 가입 요청이 이미 존재합니다."),
 	INAPPROPRIATE_GROUP_JOIN_REQUEST(CONFLICT, "자신 기준 2 hop 이내의 사용자가 속한 그룹에만 가입 신청을 보낼 수 있습니다."),
 	NOT_GROUP_MEMBER(CONFLICT, "해당 그룹의 멤버가 아닙니다."),
+	NOT_POST_WRITER(CONFLICT, "해당 게시물의 작성자가 아닙니다."),
 	REFRESHTOKEN_NOT_MATCH(CONFLICT, "Refresh Token이 일치하지 않습니다.");
 
 	private final String message;
