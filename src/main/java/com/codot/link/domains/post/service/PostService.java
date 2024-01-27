@@ -2,6 +2,8 @@ package com.codot.link.domains.post.service;
 
 import static com.codot.link.common.exception.model.ErrorCode.*;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,7 +13,9 @@ import com.codot.link.domains.group.repository.GroupRepository;
 import com.codot.link.domains.group.repository.GroupUserRepository;
 import com.codot.link.domains.post.domain.Post;
 import com.codot.link.domains.post.dto.request.PostCreateRequest;
+import com.codot.link.domains.post.dto.response.PostInfoListResponse;
 import com.codot.link.domains.post.dto.response.PostInfoResponse;
+import com.codot.link.domains.post.dto.response.PostResponse;
 import com.codot.link.domains.post.repository.PostRepository;
 import com.codot.link.domains.user.domain.User;
 import com.codot.link.domains.user.repository.UserRepository;
@@ -62,6 +66,21 @@ public class PostService {
 	private void checkPostReadingPermission(Long userId, Long postId) {
 		if (!postRepository.canUserAccessPost(userId, postId)) {
 			throw CustomException.of(NOT_GROUP_MEMBER, "자신이 속한 그룹의 게시물만 조회할 수 있습니다.");
+		}
+	}
+
+	public PostInfoListResponse postList(Long userId, Long groupId) {
+		checkUserParticipationInGroup(userId, groupId);
+
+		List<PostResponse> posts = postRepository.findAllByGroup_Id(groupId).stream()
+			.map(PostResponse::from)
+			.toList();
+		return PostInfoListResponse.from(posts);
+	}
+
+	private void checkUserParticipationInGroup(Long userId, Long groupId) {
+		if (!groupUserRepository.existsByUser_IdAndGroup_IdAndAccepted(userId, groupId, true)) {
+			throw CustomException.of(NOT_GROUP_MEMBER, "자신이 속한 그룹의 게시물들만 조회할 수 있습니다.");
 		}
 	}
 
