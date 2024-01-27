@@ -86,10 +86,20 @@ public class PostService {
 	}
 
 	public void modifyPost(Long userId, Long postId, PostModifyRequest request) {
-		Post post = postRepository.findByIdAndUser_Id(postId, userId)
-			.orElseThrow(() -> CustomException.from(NOT_POST_WRITER));
-		
+		Post post = findMyPost(userId, postId);
+
 		post.updateInfo(request);
+	}
+
+	public void deletePost(Long userId, Long postId) {
+		Post post = findMyPost(userId, postId);
+
+		postRepository.deleteById(postId);
+	}
+
+	private Post findMyPost(Long userId, Long postId) {
+		return postRepository.findByIdAndUser_Id(postId, userId)
+			.orElseThrow(() -> CustomException.from(NOT_POST_WRITER));
 	}
 
 	private Post findOne(Long postId) {
