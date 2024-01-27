@@ -22,6 +22,7 @@ public enum ErrorCode {
 	LOGIN_RECORD_NOT_FOUND(NOT_FOUND, "존재하지 않는 Login Record입니다."),
 	GROUP_NOT_FOUND(NOT_FOUND, "존재하지 않는 그룹입니다."),
 	GROUP_USER_NOT_FOUND(NOT_FOUND, "존재하지 않는 그룹 가입 요청입니다."),
+	POST_NOT_FOUND(NOT_FOUND, "존재하지 않는 게시물입니다."),
 
 	// 409 CONFLICT
 	DUPLICATE_USER_NICKNAME(CONFLICT, "이미 존재하는 닉네임입니다."),
@@ -31,6 +32,8 @@ public enum ErrorCode {
 	EXISTING_FRIEND_REQUEST(CONFLICT, "친구 추가 요청이 이미 존재합니다."),
 	EXISTING_GROUP_JOIN_REQUEST(CONFLICT, "그룹 가입 요청이 이미 존재합니다."),
 	INAPPROPRIATE_GROUP_JOIN_REQUEST(CONFLICT, "자신 기준 2 hop 이내의 사용자가 속한 그룹에만 가입 신청을 보낼 수 있습니다."),
+	NOT_GROUP_MEMBER(CONFLICT, "해당 그룹의 멤버가 아닙니다."),
+	NOT_POST_WRITER(CONFLICT, "해당 게시물의 작성자가 아닙니다."),
 	REFRESHTOKEN_NOT_MATCH(CONFLICT, "Refresh Token이 일치하지 않습니다.");
 
 	private final String message;
