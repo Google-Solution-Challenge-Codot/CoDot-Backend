@@ -3,6 +3,7 @@ package com.codot.link.domains.post.controller;
 import static org.springframework.http.HttpStatus.*;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,6 +60,15 @@ public class PostApiController {
 	public ResponseEntity<Void> modifyPost(@RequestHeader("user-id") Long userId, @PathVariable("post_id") Long postId,
 		@Valid @RequestBody PostModifyRequest request) {
 		postService.modifyPost(userId, postId, request);
+		return ResponseEntity
+			.noContent()
+			.build();
+	}
+
+	@DeleteMapping("/{post_id}")
+	public ResponseEntity<Void> deletePost(@RequestHeader("user-id") Long userId,
+		@PathVariable("post_id") Long postId) {
+		postService.deletePost(userId, postId);
 		return ResponseEntity
 			.noContent()
 			.build();
