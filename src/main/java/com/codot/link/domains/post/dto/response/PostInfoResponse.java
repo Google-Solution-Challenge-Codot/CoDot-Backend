@@ -13,10 +13,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class PostInfoResponse {
+public class PostInfoResponse extends PostResponse {
 
-	private Long postId;
-	private String title;
 	private String content;
 	private Long postWriterId;
 	private String postWriterFilePath;
@@ -26,8 +24,7 @@ public class PostInfoResponse {
 	@Builder(access = AccessLevel.PRIVATE)
 	private PostInfoResponse(Long postId, String title, String content, Long postWriterId, String postWriterFilePath,
 		String postWriterNickname) {
-		this.postId = postId;
-		this.title = title;
+		super(postId, title);
 		this.content = content;
 		this.postWriterId = postWriterId;
 		this.postWriterFilePath = postWriterFilePath;
