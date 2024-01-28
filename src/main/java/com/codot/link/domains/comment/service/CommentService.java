@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.codot.link.common.exception.model.CustomException;
 import com.codot.link.domains.comment.domain.Comment;
 import com.codot.link.domains.comment.dto.request.CommentCreateRequest;
+import com.codot.link.domains.comment.dto.request.CommentModifyRequest;
 import com.codot.link.domains.comment.repository.CommentRepository;
 import com.codot.link.domains.post.domain.Post;
 import com.codot.link.domains.post.repository.PostRepository;
@@ -47,5 +48,16 @@ public class CommentService {
 	private Post findPostByPostId(Long postId) {
 		return postRepository.findById(postId)
 			.orElseThrow(() -> CustomException.from(POST_NOT_FOUND));
+	}
+
+	public void modifyComment(Long userId, Long commentId, CommentModifyRequest request) {
+		Comment comment = findMyComment(userId, commentId);
+
+		comment.updateContent(request);
+	}
+
+	private Comment findMyComment(Long userId, Long commentId) {
+		return commentRepository.findByIdAndUser_Id(commentId, userId)
+			.orElseThrow(() -> CustomException.from(NOT_COMMENT_WRITER));
 	}
 }
