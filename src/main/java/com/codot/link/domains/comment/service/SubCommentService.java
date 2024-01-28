@@ -9,6 +9,7 @@ import com.codot.link.common.exception.model.CustomException;
 import com.codot.link.domains.comment.domain.Comment;
 import com.codot.link.domains.comment.domain.SubComment;
 import com.codot.link.domains.comment.dto.request.SubCommentCreateRequest;
+import com.codot.link.domains.comment.dto.request.SubCommentModifyRequest;
 import com.codot.link.domains.comment.repository.CommentRepository;
 import com.codot.link.domains.comment.repository.SubCommentRepository;
 import com.codot.link.domains.post.repository.PostRepository;
@@ -49,5 +50,16 @@ public class SubCommentService {
 	private Comment findCommentByCommentId(Long commentId) {
 		return commentRepository.findById(commentId)
 			.orElseThrow(() -> CustomException.from(COMMENT_NOT_FOUND));
+	}
+
+	public void modifySubComment(Long userId, Long subCommentId, SubCommentModifyRequest request) {
+		SubComment subComment = findMySubComment(userId, subCommentId);
+
+		subComment.updateContent(request);
+	}
+
+	private SubComment findMySubComment(Long userId, Long subCommentId) {
+		return subCommentRepository.findByIdAndUser_Id(subCommentId, userId)
+			.orElseThrow(() -> CustomException.from(SUB_COMMENT_NOT_FOUND));
 	}
 }
