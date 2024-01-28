@@ -56,6 +56,12 @@ public class CommentService {
 		comment.updateContent(request);
 	}
 
+	public void deleteComment(Long userId, Long commentId) {
+		Comment comment = findMyComment(userId, commentId);
+
+		commentRepository.delete(comment);
+	}
+
 	private Comment findMyComment(Long userId, Long commentId) {
 		return commentRepository.findByIdAndUser_Id(commentId, userId)
 			.orElseThrow(() -> CustomException.from(NOT_COMMENT_WRITER));
