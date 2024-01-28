@@ -1,5 +1,6 @@
 package com.codot.link.domains.comment.domain;
 
+import com.codot.link.domains.comment.dto.request.SubCommentCreateRequest;
 import com.codot.link.domains.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -11,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,4 +36,19 @@ public class SubComment {
 
 	@Column(nullable = false)
 	private String content;
+
+	@Builder(access = AccessLevel.PRIVATE)
+	private SubComment(User user, Comment comment, String content) {
+		this.user = user;
+		this.comment = comment;
+		this.content = content;
+	}
+
+	public static SubComment of(User user, Comment comment, SubCommentCreateRequest request) {
+		return SubComment.builder()
+			.user(user)
+			.comment(comment)
+			.content(request.getContent())
+			.build();
+	}
 }
