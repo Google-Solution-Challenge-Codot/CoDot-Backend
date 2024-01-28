@@ -58,8 +58,14 @@ public class SubCommentService {
 		subComment.updateContent(request);
 	}
 
+	public void deleteSubComment(Long userId, Long subCommentId) {
+		SubComment subComment = findMySubComment(userId, subCommentId);
+
+		subCommentRepository.delete(subComment);
+	}
+
 	private SubComment findMySubComment(Long userId, Long subCommentId) {
 		return subCommentRepository.findByIdAndUser_Id(subCommentId, userId)
-			.orElseThrow(() -> CustomException.from(SUB_COMMENT_NOT_FOUND));
+			.orElseThrow(() -> CustomException.from(NOT_SUB_COMMENT_WRITER));
 	}
 }
