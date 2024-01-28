@@ -1,6 +1,7 @@
 package com.codot.link.domains.comment.domain;
 
 import com.codot.link.domains.comment.dto.request.CommentCreateRequest;
+import com.codot.link.domains.comment.dto.request.CommentModifyRequest;
 import com.codot.link.domains.post.domain.Post;
 import com.codot.link.domains.user.domain.User;
 
@@ -51,5 +52,11 @@ public class Comment {
 			.post(post)
 			.content(request.getContent())
 			.build();
+	}
+
+	public void updateContent(CommentModifyRequest request) {
+		if (request.getContent() != null) {
+			this.content = request.getContent();
+		}
 	}
 }
