@@ -1,4 +1,4 @@
-package com.codot.link.domains.comment;
+package com.codot.link.domains.comment.controller;
 
 import static org.springframework.http.HttpStatus.*;
 
