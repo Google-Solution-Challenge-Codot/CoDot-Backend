@@ -3,6 +3,7 @@ package com.codot.link.domains.comment.controller;
 import static org.springframework.http.HttpStatus.*;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +39,15 @@ public class SubCommentApiController {
 	public ResponseEntity<Void> modifySubComment(@RequestHeader("user-id") Long userId,
 		@PathVariable("sub_comment_id") Long subCommentId, @Valid @RequestBody SubCommentModifyRequest request) {
 		subCommentService.modifySubComment(userId, subCommentId, request);
+		return ResponseEntity
+			.noContent()
+			.build();
+	}
+
+	@DeleteMapping("/{sub_comment_id}")
+	public ResponseEntity<Void> deleteSubComment(@RequestHeader("user-id") Long userId,
+		@PathVariable("sub_comment_id") Long subCommentId) {
+		subCommentService.deleteSubComment(userId, subCommentId);
 		return ResponseEntity
 			.noContent()
 			.build();
