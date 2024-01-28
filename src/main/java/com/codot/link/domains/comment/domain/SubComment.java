@@ -1,6 +1,7 @@
 package com.codot.link.domains.comment.domain;
 
 import com.codot.link.domains.comment.dto.request.SubCommentCreateRequest;
+import com.codot.link.domains.comment.dto.request.SubCommentModifyRequest;
 import com.codot.link.domains.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -50,5 +51,11 @@ public class SubComment {
 			.comment(comment)
 			.content(request.getContent())
 			.build();
+	}
+
+	public void updateContent(SubCommentModifyRequest request) {
+		if (request.getContent() != null) {
+			this.content = request.getContent();
+		}
 	}
 }
