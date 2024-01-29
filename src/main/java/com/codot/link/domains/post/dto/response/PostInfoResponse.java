@@ -1,5 +1,7 @@
 package com.codot.link.domains.post.dto.response;
 
+import java.util.List;
+
 import com.codot.link.domains.post.domain.Post;
 import com.codot.link.domains.user.domain.User;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -19,19 +21,22 @@ public class PostInfoResponse extends PostResponse {
 	private Long postWriterId;
 	private String postWriterFilePath;
 	private String postWriterNickname;
-	// TODO: Comment 도메인 개발 완료 후 해당 게시물 Comment 정보도 포함하기
+	private Integer commentCount;
+	private List<CommentResponse> comments;
 
 	@Builder(access = AccessLevel.PRIVATE)
 	private PostInfoResponse(Long postId, String title, String content, Long postWriterId, String postWriterFilePath,
-		String postWriterNickname) {
+		String postWriterNickname, List<CommentResponse> comments) {
 		super(postId, title);
 		this.content = content;
 		this.postWriterId = postWriterId;
 		this.postWriterFilePath = postWriterFilePath;
 		this.postWriterNickname = postWriterNickname;
+		this.commentCount = comments.size();
+		this.comments = comments;
 	}
 
-	public static PostInfoResponse from(Post post) {
+	public static PostInfoResponse of(Post post, List<CommentResponse> comments) {
 		User user = post.getUser();
 		return PostInfoResponse.builder()
 			.postId(post.getId())
@@ -40,6 +45,7 @@ public class PostInfoResponse extends PostResponse {
 			.postWriterId(user.getId())
 			.postWriterFilePath(user.getFilePath())
 			.postWriterNickname(user.getNickname())
+			.comments(comments)
 			.build();
 	}
 }
