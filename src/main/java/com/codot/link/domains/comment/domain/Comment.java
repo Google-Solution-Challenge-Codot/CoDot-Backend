@@ -3,6 +3,7 @@ package com.codot.link.domains.comment.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.codot.link.common.auditing.BaseEntity;
 import com.codot.link.domains.comment.dto.request.CommentCreateRequest;
 import com.codot.link.domains.comment.dto.request.CommentModifyRequest;
 import com.codot.link.domains.post.domain.Post;
@@ -26,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment {
+public class Comment extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

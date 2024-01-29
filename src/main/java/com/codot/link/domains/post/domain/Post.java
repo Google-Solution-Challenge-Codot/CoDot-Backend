@@ -3,6 +3,7 @@ package com.codot.link.domains.post.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.codot.link.common.auditing.BaseEntity;
 import com.codot.link.domains.comment.domain.Comment;
 import com.codot.link.domains.group.domain.Group;
 import com.codot.link.domains.post.dto.request.PostCreateRequest;
@@ -29,7 +30,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "posts")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post {
+public class Post extends BaseEntity {
 
 	@Id
 	@Column(name = "post_id")
