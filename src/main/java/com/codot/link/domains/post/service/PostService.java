@@ -2,21 +2,30 @@ package com.codot.link.domains.post.service;
 
 import static com.codot.link.common.exception.model.ErrorCode.*;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.codot.link.common.auditing.BaseEntity;
 import com.codot.link.common.exception.model.CustomException;
+import com.codot.link.domains.comment.domain.Comment;
+import com.codot.link.domains.comment.domain.SubComment;
 import com.codot.link.domains.group.domain.Group;
 import com.codot.link.domains.group.repository.GroupRepository;
 import com.codot.link.domains.group.repository.GroupUserRepository;
 import com.codot.link.domains.post.domain.Post;
 import com.codot.link.domains.post.dto.request.PostCreateRequest;
 import com.codot.link.domains.post.dto.request.PostModifyRequest;
+import com.codot.link.domains.post.dto.response.CommentResponse;
 import com.codot.link.domains.post.dto.response.PostInfoListResponse;
 import com.codot.link.domains.post.dto.response.PostInfoResponse;
 import com.codot.link.domains.post.dto.response.PostResponse;
+import com.codot.link.domains.post.dto.response.SubCommentResponse;
 import com.codot.link.domains.post.repository.PostRepository;
 import com.codot.link.domains.user.domain.User;
 import com.codot.link.domains.user.repository.UserRepository;
@@ -61,13 +70,48 @@ public class PostService {
 		checkPostReadingPermission(userId, postId);
 
 		Post post = findOne(postId);
-		return PostInfoResponse.from(post);
+		List<Comment> comments = post.getComments();
+		if (comments.isEmpty()) {
+			return PostInfoResponse.of(post, new ArrayList<>());
+		}
+		comments.sort(getCreatedDateComparator());
+
+		List<CommentResponse> commentResponses = convertCommentToCommentResponse(comments);
+		return PostInfoResponse.of(post, commentResponses);
 	}
 
 	private void checkPostReadingPermission(Long userId, Long postId) {
 		if (!postRepository.canUserAccessPost(userId, postId)) {
 			throw CustomException.of(NOT_GROUP_MEMBER, "자신이 속한 그룹의 게시물만 조회할 수 있습니다.");
 		}
+	}
+
+	private List<CommentResponse> convertCommentToCommentResponse(List<Comment> comments) {
+		return comments.stream()
+			.collect(Collectors.toMap(c -> c, c -> convertSubCommentToSubCommentResponse(c.getSubComments()),
+				(original, replacement) -> original, LinkedHashMap::new))
+			.entrySet().stream()
+			.map(entry -> CommentResponse.of(entry.getKey(), entry.getValue()))
+			.toList();
+	}
+
+	private List<SubCommentResponse> convertSubCommentToSubCommentResponse(List<SubComment> subComments) {
+		subComments.sort(getCreatedDateComparator());
+		return subComments.stream()
+			.map(SubCommentResponse::from)
+			.toList();
+	}
+
+	private Comparator<BaseEntity> getCreatedDateComparator() {
+		return (o1, o2) -> {
+			if (o1.getCreatedAt().isBefore(o2.getCreatedAt())) {
+				return -1;
+			}
+			if (o1.getCreatedAt().isAfter(o2.getCreatedAt())) {
+				return 1;
+			}
+			return 0;
+		};
 	}
 
 	public PostInfoListResponse postList(Long userId, Long groupId) {
