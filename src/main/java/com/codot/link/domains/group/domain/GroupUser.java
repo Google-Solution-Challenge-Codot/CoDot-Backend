@@ -1,5 +1,6 @@
 package com.codot.link.domains.group.domain;
 
+import com.codot.link.common.auditing.BaseEntity;
 import com.codot.link.domains.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GroupUser {
+public class GroupUser extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

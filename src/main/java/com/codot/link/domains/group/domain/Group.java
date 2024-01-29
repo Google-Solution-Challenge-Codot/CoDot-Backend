@@ -1,5 +1,6 @@
 package com.codot.link.domains.group.domain;
 
+import com.codot.link.common.auditing.BaseEntity;
 import com.codot.link.domains.group.dto.request.GroupCreateRequest;
 import com.codot.link.domains.group.dto.request.GroupModifyRequest;
 
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "groups")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Group {
+public class Group extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

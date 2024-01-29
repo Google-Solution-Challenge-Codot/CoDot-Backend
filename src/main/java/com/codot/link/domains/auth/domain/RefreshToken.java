@@ -1,5 +1,6 @@
 package com.codot.link.domains.auth.domain;
 
+import com.codot.link.common.auditing.BaseEntity;
 import com.codot.link.domains.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -18,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class RefreshToken {
+public class RefreshToken extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
