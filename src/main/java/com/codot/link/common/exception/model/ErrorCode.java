@@ -24,6 +24,7 @@ public enum ErrorCode {
 	GROUP_USER_NOT_FOUND(NOT_FOUND, "존재하지 않는 그룹 가입 요청입니다."),
 	POST_NOT_FOUND(NOT_FOUND, "존재하지 않는 게시물입니다."),
 	COMMENT_NOT_FOUND(NOT_FOUND, "존재하지 않는 댓글입니다."),
+	REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "해당 사용자는 Refresh Token이 없습니다."),
 
 	// 409 CONFLICT
 	DUPLICATE_USER_NICKNAME(CONFLICT, "이미 존재하는 닉네임입니다."),
@@ -37,7 +38,8 @@ public enum ErrorCode {
 	NOT_POST_WRITER(CONFLICT, "해당 게시물의 작성자가 아닙니다."),
 	NOT_COMMENT_WRITER(CONFLICT, "해당 댓글의 작성자가 아닙니다."),
 	NOT_SUB_COMMENT_WRITER(CONFLICT, "해당 대댓글의 작성자가 아닙니다."),
-	REFRESHTOKEN_NOT_MATCH(CONFLICT, "Refresh Token이 일치하지 않습니다.");
+	REFRESH_TOKEN_EXPIRED(CONFLICT, "Refresh Token이 만료되었습니다."),
+	REFRESH_TOKEN_NOT_MATCH(CONFLICT, "Refresh Token이 일치하지 않습니다.");
 
 	private final String message;
 	private final int statusCode;
