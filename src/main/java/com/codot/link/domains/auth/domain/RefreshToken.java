@@ -1,5 +1,9 @@
 package com.codot.link.domains.auth.domain;
 
+import static java.time.LocalDateTime.*;
+
+import java.time.LocalDateTime;
+
 import com.codot.link.common.auditing.BaseEntity;
 import com.codot.link.domains.user.domain.User;
 
@@ -33,16 +37,21 @@ public class RefreshToken extends BaseEntity {
 	@Column(nullable = false)
 	private String token;
 
+	@Column(name = "expire_at", nullable = false)
+	private LocalDateTime expireAt;
+
 	@Builder(access = AccessLevel.PRIVATE)
-	private RefreshToken(User user, String token) {
+	private RefreshToken(User user, String token, LocalDateTime expireAt) {
 		this.user = user;
 		this.token = token;
+		this.expireAt = expireAt;
 	}
 
 	public static RefreshToken of(User user, String token) {
 		return RefreshToken.builder()
 			.user(user)
 			.token(token)
+			.expireAt(now().plusDays(7))
 			.build();
 	}
 }

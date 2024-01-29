@@ -3,6 +3,7 @@ package com.codot.link.domains.auth.controller;
 import static org.springframework.http.HttpStatus.*;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +39,14 @@ public class TokenApiController {
 		response.setHeader("access-token", token);
 		return ResponseEntity
 			.status(OK)
+			.build();
+	}
+
+	@DeleteMapping("/users/logout")
+	public ResponseEntity<Void> deleteJwt(@RequestHeader("user-id") Long userId) {
+		tokenService.deleteJwt(userId);
+		return ResponseEntity
+			.noContent()
 			.build();
 	}
 }

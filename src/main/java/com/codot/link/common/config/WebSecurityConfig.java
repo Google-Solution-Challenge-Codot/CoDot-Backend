@@ -37,7 +37,7 @@ public class WebSecurityConfig {
 		http
 			.authorizeHttpRequests(request -> request
 				.requestMatchers("/api/v1/**").authenticated()
-				.requestMatchers("/login").permitAll()
+				.requestMatchers("/login", "/users/logout").permitAll()
 				.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
 				.anyRequest().authenticated());
 

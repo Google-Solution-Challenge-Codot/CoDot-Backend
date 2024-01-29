@@ -2,6 +2,7 @@ package com.codot.link.domains.auth.service;
 
 import static com.codot.link.common.exception.model.ErrorCode.*;
 import static com.codot.link.domains.auth.domain.IdType.*;
+import static java.time.LocalDateTime.*;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,14 +66,32 @@ public class TokenService {
 	public String reissueJwt(Long userId, String refreshToken) {
 		User user = findUserByUserId(userId);
 
-		confirmRefreshTokenWithUser(user, refreshToken);
+		checkRefreshToken(user, refreshToken);
 		return jwtUtils.generateAccessToken(user);
 	}
 
-	private void confirmRefreshTokenWithUser(User user, String refreshToken) {
-		if (!refreshTokenRepository.existsByUserAndToken(user, refreshToken.substring(7))) {
-			throw CustomException.from(REFRESHTOKEN_NOT_MATCH);
+	private void checkRefreshToken(User user, String refreshToken) {
+		RefreshToken token = findRefreshTokenByUserAndToken(user, refreshToken);
+		checkTokenExpiry(token);
+	}
+
+	private RefreshToken findRefreshTokenByUserAndToken(User user, String refreshToken) {
+		return refreshTokenRepository.findByUserAndToken(user, refreshToken.substring(7))
+			.orElseThrow(() -> CustomException.from(REFRESH_TOKEN_NOT_MATCH));
+	}
+
+	private void checkTokenExpiry(RefreshToken token) {
+		if (token.getExpireAt().isBefore(now())) {
+			refreshTokenRepository.delete(token);
+			throw CustomException.from(REFRESH_TOKEN_EXPIRED);
 		}
+	}
+
+	public void deleteJwt(Long userId) {
+		RefreshToken token = refreshTokenRepository.findByUser_Id(userId)
+			.orElseThrow(() -> CustomException.from(REFRESH_TOKEN_NOT_FOUND));
+		
+		refreshTokenRepository.delete(token);
 	}
 
 	private User findUserByUserId(Long userId) {
