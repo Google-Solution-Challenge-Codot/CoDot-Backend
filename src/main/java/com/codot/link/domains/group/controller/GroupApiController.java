@@ -73,7 +73,7 @@ public class GroupApiController {
 
 	@DeleteMapping("/{group_id}")
 	public ResponseEntity<Void> deleteGroup(@RequestHeader("user-id") Long userId,
-		@PathVariable("group_id") Long groupId, @RequestBody GroupDeleteRequest request) {
+		@PathVariable("group_id") Long groupId, @Valid @RequestBody GroupDeleteRequest request) {
 		groupService.deleteGroup(userId, groupId, request);
 		return ResponseEntity
 			.noContent()
