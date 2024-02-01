@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,7 +24,7 @@ public class SubCommentCreateRequest {
 	@Min(value = 1, message = "id값은 1 이상이어야 합니다.")
 	private Long commentId;
 
-	@NotEmpty(message = "대댓글 내용은 필수이며 공백 문자열을 허용되지 않습니다.")
+	@NotBlank(message = "대댓글 내용은 필수이며 공백 문자열을 허용되지 않습니다.")
 	private String content;
 
 	// === Test 용도 === //

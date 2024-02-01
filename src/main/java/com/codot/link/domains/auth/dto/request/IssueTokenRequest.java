@@ -4,7 +4,7 @@ import com.codot.link.domains.auth.domain.Provider;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class IssueTokenRequest {
 
-	@NotEmpty(message = "oauthId 값은 필수이며 공백 문자열은 허용되지 않습니다.")
+	@NotBlank(message = "oauthId 값은 필수이며 공백 문자열은 허용되지 않습니다.")
 	private String oauthId;
 
 	@NotNull(message = "oauth provider는 필수입니다.")
