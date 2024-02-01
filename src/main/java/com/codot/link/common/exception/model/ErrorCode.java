@@ -33,6 +33,7 @@ public enum ErrorCode {
 	ALREADY_ACCEPTED_GROUP_JOIN_REQUEST(CONFLICT, "이미 해당 그룹에 참가한 상태입니다."),
 	EXISTING_FRIEND_REQUEST(CONFLICT, "친구 추가 요청이 이미 존재합니다."),
 	EXISTING_GROUP_JOIN_REQUEST(CONFLICT, "그룹 가입 요청이 이미 존재합니다."),
+	NOT_HOST_OF_THE_GROUP(CONFLICT, "해당 모임을 주최하지 않았습니다."),
 	INAPPROPRIATE_GROUP_JOIN_REQUEST(CONFLICT, "자신 기준 2 hop 이내의 사용자가 속한 그룹에만 가입 신청을 보낼 수 있습니다."),
 	NOT_GROUP_MEMBER(CONFLICT, "해당 그룹의 멤버가 아닙니다."),
 	NOT_POST_WRITER(CONFLICT, "해당 게시물의 작성자가 아닙니다."),
