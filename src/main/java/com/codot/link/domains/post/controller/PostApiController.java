@@ -58,7 +58,7 @@ public class PostApiController {
 
 	@PatchMapping("/{post_id}")
 	public ResponseEntity<Void> modifyPost(@RequestHeader("user-id") Long userId, @PathVariable("post_id") Long postId,
-		@Valid @RequestBody PostModifyRequest request) {
+		@RequestBody PostModifyRequest request) {
 		postService.modifyPost(userId, postId, request);
 		return ResponseEntity
 			.noContent()
