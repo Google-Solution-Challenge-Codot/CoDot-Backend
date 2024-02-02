@@ -81,7 +81,7 @@ public class GroupApiController {
 	}
 
 	@GetMapping("/request")
-	public ResponseEntity<?> groupRequestInfo(@RequestHeader("user-id") Long userId,
+	public ResponseEntity<GroupRequestInfoListResponse> groupRequestInfo(@RequestHeader("user-id") Long userId,
 		@Valid @RequestBody GroupRequestInfoRequest request) {
 		GroupRequestInfoListResponse response = groupUserService.groupRequestInfo(userId, request);
 		return ResponseEntity
