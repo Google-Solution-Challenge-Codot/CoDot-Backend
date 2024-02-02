@@ -31,7 +31,11 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-    
+
+    // fcm + guava 31.1 ver 취약점 문제로 인한 guava 33.0 ver 별도 추가
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+    implementation 'com.google.guava:guava:33.0.0-jre'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     annotationProcessor 'org.projectlombok:lombok'
