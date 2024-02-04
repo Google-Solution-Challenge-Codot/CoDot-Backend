@@ -14,7 +14,7 @@ public interface FcmTokenRepository extends JpaRepository<FcmToken, Long> {
 
 	Optional<FcmToken> findByUser(User user);
 
-	@Query(value = "select * from fcm_token ft "
+	@Query(value = "select ft.* from fcm_token ft "
 		+ "join group_user gu on ft.user_id = gu.user_id "
 		+ "where gu.group_id = :groupId and gu.accepted = true", nativeQuery = true)
 	List<FcmToken> findAllByGroupId(@Param("groupId") Long groupId);
