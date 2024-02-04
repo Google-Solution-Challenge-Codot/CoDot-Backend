@@ -25,6 +25,7 @@ public enum ErrorCode {
 	POST_NOT_FOUND(NOT_FOUND, "존재하지 않는 게시물입니다."),
 	COMMENT_NOT_FOUND(NOT_FOUND, "존재하지 않는 댓글입니다."),
 	REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "해당 사용자는 Refresh Token이 없습니다."),
+	FCM_TOKEN_NOT_FOUND(NOT_FOUND, "해당 사용자는 Fcm Token이 없습니다."),
 
 	// 409 CONFLICT
 	DUPLICATE_USER_NICKNAME(CONFLICT, "이미 존재하는 닉네임입니다."),
