@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.codot.link.domains.post.domain.Post;
+import com.codot.link.domains.user.domain.User;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
@@ -20,4 +21,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	List<Post> findAllByGroup_Id(Long groupId);
 
 	Optional<Post> findByIdAndUser_Id(Long postId, Long userId);
+
+	void deleteAllByUser(User user);
 }

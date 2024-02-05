@@ -33,4 +33,6 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
 			+ "order by random() "
 			+ "limit 5", nativeQuery = true)
 	List<Link> findTwoHops(@Param("userId") Long userId);
+
+	void deleteAllByFromOrTo(User from, User to);
 }
