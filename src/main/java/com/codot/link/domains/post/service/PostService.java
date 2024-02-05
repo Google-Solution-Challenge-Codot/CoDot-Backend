@@ -118,9 +118,22 @@ public class PostService {
 		checkUserParticipationInGroup(userId, groupId);
 
 		List<PostResponse> posts = postRepository.findAllByGroup_Id(groupId).stream()
+			.sorted(getCreatedDateReverseComparator())
 			.map(PostResponse::from)
 			.toList();
 		return PostInfoListResponse.from(posts);
+	}
+
+	private Comparator<BaseEntity> getCreatedDateReverseComparator() {
+		return (p1, p2) -> {
+			if (p1.getCreatedAt().isBefore(p2.getCreatedAt())) {
+				return 1;
+			}
+			if (p1.getCreatedAt().isAfter(p2.getCreatedAt())) {
+				return -1;
+			}
+			return 0;
+		};
 	}
 
 	private void checkUserParticipationInGroup(Long userId, Long groupId) {
