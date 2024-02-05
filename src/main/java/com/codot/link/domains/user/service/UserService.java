@@ -16,9 +16,15 @@ import com.codot.link.common.auth.jwt.JwtUtils;
 import com.codot.link.common.exception.model.CustomException;
 import com.codot.link.domains.auth.domain.LoginRecord;
 import com.codot.link.domains.auth.repository.LoginRecordRepository;
+import com.codot.link.domains.auth.repository.RefreshTokenRepository;
+import com.codot.link.domains.fcm.FcmTokenRepository;
+import com.codot.link.domains.group.repository.GroupRepository;
+import com.codot.link.domains.group.repository.GroupUserRepository;
 import com.codot.link.domains.link.domain.ConnectionPoint;
 import com.codot.link.domains.link.domain.Link;
 import com.codot.link.domains.link.repository.LinkRepository;
+import com.codot.link.domains.message.repository.MessageRepository;
+import com.codot.link.domains.post.repository.PostRepository;
 import com.codot.link.domains.user.dao.OneHopDirectSearchResult;
 import com.codot.link.domains.user.dao.ThreeHopDirectSearchResult;
 import com.codot.link.domains.user.dao.TwoHopDirectSearchResult;
@@ -48,7 +54,13 @@ public class UserService {
 	private final JwtUtils jwtUtils;
 	private final UserRepository userRepository;
 	private final LinkRepository linkRepository;
+	private final PostRepository postRepository;
+	private final GroupRepository groupRepository;
+	private final MessageRepository messageRepository;
+	private final GroupUserRepository groupUserRepository;
+	private final FcmTokenRepository fcmTokenRepository;
 	private final LoginRecordRepository loginRecordRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	public String userSignup(Long loginRecordId, UserSignupRequest request) {
 		validateNicknameDuplicate(request.getNickname());
@@ -84,7 +96,19 @@ public class UserService {
 	public void userDelete(Long userId, UserDeleteRequest request) {
 		User user = findOne(userId);
 		confirmUserByEmail(user, request.getEmail());
+
+		removeRelatedEntity(user);
 		userRepository.delete(user);
+	}
+
+	private void removeRelatedEntity(User user) {
+		postRepository.deleteAllByUser(user);
+		groupRepository.deleteAll(groupRepository.findAllByHostUser(user.getId()));
+		fcmTokenRepository.deleteByUser(user);
+		loginRecordRepository.deleteByUser(user);
+		refreshTokenRepository.deleteByUser(user);
+		linkRepository.deleteAllByFromOrTo(user, user);
+		messageRepository.deleteAllBySenderOrReceiver(user, user);
 	}
 
 	public User findOne(Long userId) {
