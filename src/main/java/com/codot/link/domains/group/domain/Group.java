@@ -1,14 +1,19 @@
 package com.codot.link.domains.group.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.codot.link.common.auditing.BaseEntity;
 import com.codot.link.domains.group.dto.request.GroupCreateRequest;
 import com.codot.link.domains.group.dto.request.GroupModifyRequest;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,6 +36,9 @@ public class Group extends BaseEntity {
 
 	@Column(nullable = false)
 	private String description;
+
+	@OneToMany(mappedBy = "group", cascade = CascadeType.REMOVE)
+	private List<GroupUser> groupUsers = new ArrayList<>();
 
 	@Builder(access = AccessLevel.PRIVATE)
 	private Group(String name, String description) {

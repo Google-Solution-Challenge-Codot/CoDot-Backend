@@ -43,4 +43,8 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 		+ "where g.name REGEXP :regex "
 		+ "or g.description REGEXP :regex", nativeQuery = true)
 	List<Group> findAllBySearchTextRegex(@Param("regex") String regex);
+
+	@Query(value = "select * from groups g "
+		+ "where exists (select 1 from group_user gu where gu.user_id = :userId and gu.group_id = gu.group_id and gu.role = 'HOST')", nativeQuery = true)
+	List<Group> findAllByHostUser(@Param("userId") Long userId);
 }
