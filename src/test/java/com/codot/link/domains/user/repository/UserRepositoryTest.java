@@ -30,6 +30,7 @@ class UserRepositoryTest {
 	@Autowired
 	LinkRepository linkRepository;
 
+	// === findMyFriends Test === //
 	@Test
 	@DisplayName("특정 사용자와 CONNECTED 친구 관계에 있는 모든 사용자를 조회할 수 있어야 한다")
 	void 특정_사용자와_CONNECTED_친구_관계에_있는_모든_사용자를_조회할_수_있어야_한다() {
@@ -62,6 +63,7 @@ class UserRepositoryTest {
 		assertThat(friends).doesNotContain(userC);
 	}
 
+	// === findUserByDirectSearchFirstHop Test === //
 	@Test
 	@DisplayName("Direct Search 로직에서 first hop에 있는 사용자를 닉네임으로 조회할 수 있어야 한다")
 	void Direct_Search_로직에서_first_hop에_있는_사용자를_닉네임으로_조회할_수_있어야_한다() {
@@ -122,6 +124,7 @@ class UserRepositoryTest {
 		assertThrows(NoSuchElementException.class, targetUser::get);
 	}
 
+	// === findUserByDirectSearchTwoHop Test === //
 	@Test
 	@DisplayName("Direct Search 로직에서 second hop에 있는 사용자를 닉네임으로 조회할 수 있어야 한다")
 	void Direct_Search_로직에서_second_hop에_있는_사용자를_닉네임으로_조회할_수_있어야_한다() {
