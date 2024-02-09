@@ -3,8 +3,11 @@ package com.codot.link.domains.user.repository;
 import static com.codot.link.domains.link.domain.Status.*;
 import static com.codot.link.domains.user.domain.GraduationStatus.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.codot.link.domains.link.domain.Link;
 import com.codot.link.domains.link.repository.LinkRepository;
+import com.codot.link.domains.user.dao.OneHopDirectSearchResult;
 import com.codot.link.domains.user.domain.User;
 import com.codot.link.domains.user.dto.request.UserSignupRequest;
 
@@ -55,5 +59,65 @@ class UserRepositoryTest {
 		assertThat(friends.size()).isEqualTo(1);
 		assertThat(friends).contains(userB);
 		assertThat(friends).doesNotContain(userC);
+	}
+
+	@Test
+	@DisplayName("Direct Search 로직에서 first hop에 있는 사용자를 닉네임으로 조회할 수 있어야 한다")
+	void Direct_Search_로직에서_first_hop에_있는_사용자를_닉네임으로_조회할_수_있어야_한다() {
+		//given
+		UserSignupRequest requestA = UserSignupRequest.of("userA", "email", "nicknameA", "HONGIK", "CE",
+			"hello", UNDERGRADUATE);
+		UserSignupRequest requestB = UserSignupRequest.of("userB", "email", "nicknameB", "HONGIK", "CE",
+			"hello", UNDERGRADUATE);
+		UserSignupRequest requestC = UserSignupRequest.of("userC", "email", "nicknameC", "HONGIK", "CE",
+			"hello", UNDERGRADUATE);
+
+		User userA = userRepository.save(User.from(requestA));
+		User userB = userRepository.save(User.from(requestB));
+		User userC = userRepository.save(User.from(requestC));
+
+		Link fromAToB = Link.of(userA, userB, CONNECTED);
+		Link fromBToA = Link.of(userB, userA, CONNECTED);
+		Link fromBToC = Link.of(userB, userC, CONNECTED);
+		Link fromCToB = Link.of(userC, userB, CONNECTED);
+		linkRepository.saveAll(
+			List.of(fromAToB, fromBToA, fromBToC, fromCToB));
+
+		//when
+		OneHopDirectSearchResult targetUser = userRepository.findUserByDirectSearchFirstHop(userA.getId(),
+			"nicknameB").orElseThrow(NoSuchElementException::new);
+
+		//then
+		assertThat(targetUser.getFirstHopId()).isEqualTo(userB.getId());
+	}
+
+	@Test
+	@DisplayName("해당 닉네임을 가진 사용자가 존재하더라도 1 hop 내에 없다면 조회하지 않아야 한다")
+	void 해당_닉네임을_가진_사용자가_존재하더라도_1_hop_내에_없다면_조회하지_않아야_한다() {
+		//given
+		UserSignupRequest requestA = UserSignupRequest.of("userA", "email", "nicknameA", "HONGIK", "CE",
+			"hello", UNDERGRADUATE);
+		UserSignupRequest requestB = UserSignupRequest.of("userB", "email", "nicknameB", "HONGIK", "CE",
+			"hello", UNDERGRADUATE);
+		UserSignupRequest requestC = UserSignupRequest.of("userC", "email", "nicknameC", "HONGIK", "CE",
+			"hello", UNDERGRADUATE);
+
+		User userA = userRepository.save(User.from(requestA));
+		User userB = userRepository.save(User.from(requestB));
+		User userC = userRepository.save(User.from(requestC));
+
+		Link fromAToB = Link.of(userA, userB, CONNECTED);
+		Link fromBToA = Link.of(userB, userA, CONNECTED);
+		Link fromBToC = Link.of(userB, userC, CONNECTED);
+		Link fromCToB = Link.of(userC, userB, CONNECTED);
+		linkRepository.saveAll(
+			List.of(fromAToB, fromBToA, fromBToC, fromCToB));
+
+		//when
+		Optional<OneHopDirectSearchResult> targetUser = userRepository.findUserByDirectSearchFirstHop(userA.getId(),
+			"nicknameC");
+
+		//then
+		assertThrows(NoSuchElementException.class, targetUser::get);
 	}
 }
