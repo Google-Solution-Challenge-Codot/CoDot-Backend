@@ -36,6 +36,7 @@ class UserRepositoryTest {
 	User userB;
 	User userC;
 	User userD;
+	User userE;
 
 	// === Test Data Setup === //
 	@BeforeEach
@@ -48,11 +49,14 @@ class UserRepositoryTest {
 			"hello", UNDERGRADUATE);
 		UserSignupRequest requestD = UserSignupRequest.of("userD", "email", "nicknameD", "HONGIK", "CE",
 			"hello", UNDERGRADUATE);
+		UserSignupRequest requestE = UserSignupRequest.of("userE", "email", "nicknameE", "HONGIK", "CE",
+			"hello", UNDERGRADUATE);
 
 		userA = userRepository.save(User.from(requestA));
 		userB = userRepository.save(User.from(requestB));
 		userC = userRepository.save(User.from(requestC));
 		userD = userRepository.save(User.from(requestD));
+		userE = userRepository.save(User.from(requestE));
 	}
 
 	// === findMyFriends Test === //
@@ -246,5 +250,35 @@ class UserRepositoryTest {
 
 		//then
 		assertThrows(NoSuchElementException.class, targetUser::get);
+	}
+
+	// === findMyFriendsByFriendSearch Test === //
+	@Test
+	@DisplayName("Friend Search 로직에서 반환하는 친구 리스트에는 이전에 거쳐온 사용자들과 친구 관계인 사용자들은 없어야 한다")
+	void Friend_Search_로직에서_반환하는_친구_리스트에는_이전에_거쳐온_사용자들과_친구_관계인_사용자들은_없어야_한다() {
+		//given
+		Link fromAToB = Link.of(userA, userB, CONNECTED);
+		Link fromBToA = Link.of(userB, userA, CONNECTED);
+		Link fromBToC = Link.of(userB, userC, CONNECTED);
+		Link fromCToB = Link.of(userC, userB, CONNECTED);
+		Link fromDToC = Link.of(userD, userC, CONNECTED);
+		Link fromCToD = Link.of(userC, userD, CONNECTED);
+		Link fromAToC = Link.of(userA, userC, CONNECTED);
+		Link fromCToA = Link.of(userC, userA, CONNECTED);
+		Link fromBToD = Link.of(userB, userD, CONNECTED);
+		Link fromDToB = Link.of(userD, userB, CONNECTED);
+		Link fromEToD = Link.of(userE, userD, CONNECTED);
+		Link fromDToE = Link.of(userD, userE, CONNECTED);
+		linkRepository.saveAll(
+			List.of(fromAToB, fromBToA, fromBToC, fromCToB, fromDToC, fromCToD, fromAToC, fromCToA, fromBToD, fromDToB,
+				fromEToD, fromDToE));
+
+		//when
+		List<User> friends = userRepository.findMyFriendsByFriendSearch(userD.getId(),
+			List.of(userA.getId(), userC.getId()));
+
+		//then
+		assertThat(friends.size()).isEqualTo(1);
+		assertThat(friends).containsExactlyInAnyOrder(userE);
 	}
 }
