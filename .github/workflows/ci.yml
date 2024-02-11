@@ -1,0 +1,26 @@
+name: Check Test Before Merging into Develop
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  build-for-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle And Run Tests
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          arguments: test
