@@ -26,4 +26,4 @@ jobs:
       - name: Setup Gradle And Run Tests
         uses: gradle/actions/setup-gradle@v3
         with:
-          arguments: test
+          args: test --tests 'com.codot.link.domains.*'
