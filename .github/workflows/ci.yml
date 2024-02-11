@@ -27,4 +27,4 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Run Tests
-        uses: ./gradlew test --tests 'com.codot.link.domains.*'
+        run: ./gradlew test --tests 'com.codot.link.domains.*'
