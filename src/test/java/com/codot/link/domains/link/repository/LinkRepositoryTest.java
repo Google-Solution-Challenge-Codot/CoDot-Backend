@@ -60,19 +60,25 @@ class LinkRepositoryTest {
 		//given
 		Link fromAToB = Link.of(userA, userB, CONNECTED);
 		Link fromBToA = Link.of(userB, userA, CONNECTED);
+		Link fromAToC = Link.of(userA, userC, CONNECTED);
+		Link fromCToA = Link.of(userC, userA, CONNECTED);
 		Link fromBToC = Link.of(userB, userC, CONNECTED);
 		Link fromCToB = Link.of(userC, userB, CONNECTED);
 		Link fromBToD = Link.of(userB, userD, CONNECTED);
 		Link fromDToB = Link.of(userD, userB, CONNECTED);
-		Link fromEToC = Link.of(userE, userC, PROCESSING);
-		Link fromCToE = Link.of(userC, userE, PROCESSING);
-		linkRepository.saveAll(List.of(fromAToB, fromBToA, fromBToC, fromCToB, fromBToD, fromDToB, fromEToC, fromCToE));
+		Link fromEToC = Link.of(userE, userC, CONNECTED);
+		Link fromCToE = Link.of(userC, userE, CONNECTED);
+		Link fromEToB = Link.of(userE, userB, CONNECTED);
+		Link fromBToE = Link.of(userB, userE, CONNECTED);
+		linkRepository.saveAll(
+			List.of(fromAToB, fromBToA, fromAToC, fromCToA, fromBToC, fromCToB, fromBToD, fromDToB, fromEToC, fromCToE,
+				fromEToB, fromBToE));
 
 		//when
 		List<Link> twoHops = linkRepository.findTwoHops(userA.getId());
 
 		//then
-		assertThat(twoHops.size()).isEqualTo(2);
-		assertThat(twoHops).containsExactlyInAnyOrder(fromBToC, fromBToD);
+		assertThat(twoHops.size()).isEqualTo(3);
+		assertThat(twoHops).containsExactlyInAnyOrder(fromBToD, fromBToE, fromCToE);
 	}
 }
