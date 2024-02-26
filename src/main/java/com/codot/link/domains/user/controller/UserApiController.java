@@ -89,7 +89,7 @@ public class UserApiController {
 	}
 
 	@GetMapping("/friend_search")
-	public ResponseEntity<FriendSearchListResponse> userDirectSearch(@RequestHeader("user-id") Long userId,
+	public ResponseEntity<FriendSearchListResponse> userFriendSearch(@RequestHeader("user-id") Long userId,
 		@Valid @RequestBody FriendSearchRequest request) {
 		FriendSearchListResponse response = userService.userFriendSearch(request);
 		return ResponseEntity
