@@ -33,8 +33,13 @@ jobs:
           echo $APPLICATION_SECURITY_YML | base64 --decode > src/main/resources/application-security.yml
           echo $FCM_SECRET | base64 --decode > src/main/resources/$FCM_SECRET_FILE_NAME
 
-      - name: Setup Gradle And Build
+      - name: Setup Gradle to publish build scans
         uses: gradle/actions/setup-gradle@v3
         with:
-          arguments: build
           add-job-summary-as-pr-comment: always
+          build-scan-publish: true
+          build-scan-terms-of-service-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-service-agree: "yes"
+
+      - name: Build
+        run: ./gradlew build --scan
