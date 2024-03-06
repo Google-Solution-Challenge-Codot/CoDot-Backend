@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: write
 
     steps:
       - name: Code Checkout
@@ -23,8 +24,20 @@ jobs:
       - name: Grant Access To gradlew
         run: chmod +x ./gradlew
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: Retrieve Secrets And Add to Project Directory
+        env:
+          APPLICATION_SECURITY_YML: ${{ secrets.APPLICATION_SECURITY_YML }}
+          FCM_SECRET: ${{ secrets.FCM_SECRET }}
+          FCM_SECRET_FILE_NAME: ${{ secrets.FCM_SECRET_FILE_NAME }}
+        run: |
+          echo $APPLICATION_SECURITY_YML | base64 --decode > src/main/resources/application-security.yml
+          echo $FCM_SECRET | base64 --decode > src/main/resources/$FCM_SECRET_FILE_NAME
 
-      - name: Run Tests
-        run: ./gradlew test --tests 'com.codot.link.domains.*'
+      - name: Setup Gradle to publish build scans And Build
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          arguments: build
+          add-job-summary-as-pr-comment: always
+          build-scan-publish: true
+          build-scan-terms-of-service-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-service-agree: "yes"
