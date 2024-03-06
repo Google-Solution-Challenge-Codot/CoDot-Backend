@@ -29,7 +29,7 @@ jobs:
           FCM_SECRET: ${{ secrets.FCM_SECRET }}
           FCM_SECRET_FILE_NAME: ${{ secrets.FCM_SECRET_FILE_NAME }}
         run: |
-          echo $APPLICATION_SECURITY_YML > src/main/resources/application-security.yml
+          echo $APPLICATION_SECURITY_YML | base64 --decode > src/main/resources/application-security.yml
           echo $FCM_SECRET | base64 --decode > src/main/resources/$FCM_SECRET_FILE_NAME
 
       - name: Setup Gradle And Build
