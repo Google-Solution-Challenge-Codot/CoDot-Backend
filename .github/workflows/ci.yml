@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: write
 
     steps:
       - name: Code Checkout
@@ -36,3 +37,4 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
         with:
           arguments: build
+          add-job-summary-as-pr-comment: always
