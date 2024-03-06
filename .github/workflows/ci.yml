@@ -32,5 +32,7 @@ jobs:
           echo $APPLICATION_SECURITY_YML > src/main/resources/application-security.yml
           echo $FCM_SECRET | base64 --decode > src/main/resources/$FCM_SECRET_FILE_NAME
 
-      - name: Build
-        run: ./gradlew build
+      - name: Setup Gradle And Build
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          arguments: build
