@@ -23,7 +23,5 @@ jobs:
       - name: Grant Access To gradlew
         run: chmod +x ./gradlew
 
-      - name: Setup Gradle And Run Tests
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          arguments: test --tests 'com.codot.link.domains.*'
+      - name: Run Tests
+        run: ./gradlew test --tests 'com.codot.link.domains.*'
