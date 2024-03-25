@@ -4,9 +4,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-src/main/resources/data.sql
-src/main/resources/application-security.yml
-src/main/resources/fcm-secret.json
+src/main/resources/*.json
 
 ### STS ###
 .apt_generated
