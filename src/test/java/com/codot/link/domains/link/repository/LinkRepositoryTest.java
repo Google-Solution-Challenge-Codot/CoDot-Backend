@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.codot.link.domains.link.domain.Link;
 import com.codot.link.domains.user.domain.User;
@@ -18,6 +19,7 @@ import com.codot.link.domains.user.dto.request.UserSignupRequest;
 import com.codot.link.domains.user.repository.UserRepository;
 
 @DataJpaTest
+@ActiveProfiles("local-test")
 class LinkRepositoryTest {
 
 	@Autowired
