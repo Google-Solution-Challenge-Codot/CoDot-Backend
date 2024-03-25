@@ -1,0 +1,4 @@
+spring:
+  profiles:
+    group:
+      local-test: test, security
