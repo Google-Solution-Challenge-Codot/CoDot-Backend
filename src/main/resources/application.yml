@@ -1,21 +1,4 @@
-# h2 database
 spring:
   profiles:
-    include: security
-
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
-    defer-datasource-initialization: true
-
-logging:
-  level:
-    org:
-      hibernate:
-        orm:
-          jdbc:
-            bind: trace
+    group:
+      local-env: local, security
